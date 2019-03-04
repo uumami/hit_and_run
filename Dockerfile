@@ -6,6 +6,10 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         cuda-nvml-dev-$CUDA_PKG_VERSION \
         cuda-minimal-build-$CUDA_PKG_VERSION \
         cuda-command-line-tools-$CUDA_PKG_VERSION \
+        cuda-cusolver-$CUDA_PKG_VERSION \
+        cuda-cublas-$CUDA_PKG_VERSION \
+        cuda-curand-$CUDA_PKG_VERSION \
+        cuda-cusparse-$CUDA_PKG_VERSION \
         libnccl-dev=$NCCL_VERSION-1+cuda10.0 && \
     rm -rf /var/lib/apt/lists/*
 
