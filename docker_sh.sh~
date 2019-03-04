@@ -1,0 +1,5 @@
+#!/bin/bash
+
+docker build --runtime=nvidia -t  cuda_16_10_devel --build-arg CACHEBUST=$(date +%s) . 
+docker rm test_cuda_1
+docker run -ti --name=test_cuda_1 cuda_16_10_devel
