@@ -61,7 +61,7 @@ if(file == NULL){
 
 
 /***************************  count_columns ***********************************/
-void parse_restrictions (){
+int parse_restrictions(){
   // Aux varaible for identifying the number of restrictions
   unsigned NE = 0;
   unsigned NI = 0;
@@ -75,11 +75,10 @@ void parse_restrictions (){
   // Parse Equality vector for rows
   ME = count_rows(b_eq);
   fclose(b_eq);
+  printf("Number of (rows) in the Equality Vector: %u \n", ME );
   // Parse Inequality vector for rows
   MI = count_rows(b_in);
   fclose(b_in);
-  // Print
-  printf("Number of (rows) in the Equality Vector: %u \n", ME );
   printf("Number of (rows) in the Inequality Vector: %u \n", MI );
 
   // Parse the number of variables (columns) in AE
@@ -99,7 +98,6 @@ void parse_restrictions (){
     AS %u.\n", N);
   }
 
-  printf(" Number of Variables: %u \n", N );
+  printf("Number of Variables: %u \n", N );
+  return 1;
 }
-
-int main(void){}

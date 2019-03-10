@@ -89,7 +89,7 @@ unsigned count_columns(FILE *file);
       + None, the varaibles are saved via pointers. See section RM1
       (at the beginning of this header file).
 *******************************************************************************/
-void parse_restrictions();
+int parse_restrictions();
 
 
 /***************************  allocate_matrices ********************************
