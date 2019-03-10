@@ -4,6 +4,12 @@
 #include <string.h>
 #include <math.h>
 /* -------------------------------------------------------------------------- */
+/* ----------------------- Sc Comp Libraries ------------------------------- */
+
+#include <cuda_runtime.h>
+#include "cublas_v2.h"
+/* -------------------------------------------------------------------------- */
+
 
 /*----------------------------- RM1 --------------------------------------------
 ------------------ Parameters for setting matrix sizes ---------------------- */
@@ -14,6 +20,7 @@ static unsigned ME;
 // Number of Inequalities
 static unsigned MI;
 /* -------------------------------------------------------------------------- */
+
 
 /*----------------------------- RM2 --------------------------------------------
 /* ------------------------ Pointers to restrictions ------------------------ */
@@ -82,7 +89,7 @@ unsigned count_columns(FILE *file);
       + None, the varaibles are saved via pointers. See section RM1
       (at the beginning of this header file).
 *******************************************************************************/
-void count_restrictions();
+void parse_restrictions();
 
 
 /***************************  allocate_matrices ********************************

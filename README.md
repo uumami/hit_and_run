@@ -24,7 +24,7 @@ To do Code: (REVAMP the old code)
 + Read Matrices (probably in row major, instead of column major)
 + Find Inner Point (Chebyshev center)
 + Calculate projection Matrix
-+ Generate direction (n2 directions ~Normal iid)
++ Generate direction (n2 directions ~Normal iid) Mersenne Twister
 + Project d
 + Find lambdas (FIND LINE SEGMENT)
 + Take random point from the line segment
