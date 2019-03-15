@@ -111,6 +111,7 @@ int free_host_matrices_har(){
 
 /* ******************************* Main ************************************* */
 int main(){
+
   int verbose = 1;
 
   // Allocate matrices in host
