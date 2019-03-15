@@ -49,7 +49,9 @@ static double *D_bE;
 static double *H_bI;
 static double *D_bI;
 /* -------------------------------------------------------------------------- */
-int allocate_matrices_host_routine(){
+
+/* ******************** allocate_matrices_host_routine *********************  */
+int allocate_matrices_host_har(int verbose){
   // Aux varaible for identifying the number of restrictions
   unsigned NE = 0;
   unsigned NI = 0;
@@ -57,42 +59,65 @@ int allocate_matrices_host_routine(){
   // Parse Equality vector for rows
   FILE *b_eq    = fopen(bE_TXT, "r");
   ME = count_rows(b_eq);
+  allocate_matrices_host(H_bI, b_eq, ME);
   fclose(b_eq);
-  printf("Number of (rows) in the Equality Vector: %u \n", ME );
 
   // Parse Inequality vector for rows
   FILE *b_in    = fopen(bI_TXT, "r");
   MI = count_rows(b_in);
+  allocate_matrices_host(H_bI, b_eq, MI);
   fclose(b_in);
-  printf("Number of (rows) in the Inequality Vector: %u \n", MI );
 
   // Parse the number of variables (columns) in AE
   FILE *a_eq    = fopen(AE_TXT, "r");
   NE       = count_columns(a_eq);
+  allocate_matrices_host(H_bI, b_eq, NE*ME);
   fclose(a_eq);
 
   // Parse the number of variables (columns) in AI
   FILE *a_in    = fopen(AI_TXT, "r");
   NI = count_columns(a_in);
+  allocate_matrices_host(H_bI, b_eq, NI*MI);
   fclose(a_in);
-  // Print
-  printf("Number of variables (columns) in the Equality Matrix is: %u \n", NE );
-  printf("Number of variables (columns) in the Inquality Matrix is:\
-  %u \n", NI );
-  N = NE;
-    // This condition is only tiggered if some matrix is empty
+
+  // This condition is only tiggered if some matrix is empty
   if(NI != NE){
   printf(" THE NUMBER OF VARIABLES IN EACH MATRIX DIFFERS. WE WILL \
   TAKE THE NUMBER OF VARIABLES (COLUMNS) IN THE EQUALITY RESTRICTIONS \
   AS %u.\n", N);
   }
+  N = NE;
 
-  printf("Number of Variables: %u \n", N );
+  // Print
+  if (verbose){
+    printf("Number of (rows) in the Equality Vector: %u \n", ME );
+    printf("Number of (rows) in the Inequality Vector: %u \n", MI );
+    printf("Number of variables (columns) in the Equality Matrix is: %u \n", NE );
+    printf("Number of variables (columns) in the Inquality Matrix is: %u \n", NI );
+   }
+
   return 0;
-}
-/*--------------------------- Main ------------------------------------------- */
+
+} // end allocate_matrices_host_har
+
+/************************ free allocated host matrices *********************  */
+int free_host_matrices_har(){
+  free(H_AE);
+  free(H_AI);
+  free(H_bE);
+  free(H_bI);
+  return 0;
+}// End free_host_matrices_har
+
+/* ******************************* Main ************************************* */
 int main(){
+  int verbose = 1;
+
   // Allocate matrices in host
-  allocate_matrices_host_routine();
+  allocate_matrices_host_har(verbose);
+
+  // Free allocated matrices in the host
+  free_host_matrices_har();
+
   return 0;
 } // End Main
