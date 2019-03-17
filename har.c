@@ -14,6 +14,7 @@
 #include "matrix_routines/read_matrix.c"
 #include "matrix_routines/allocate_matrices.c"
 #include "har.h"
+#include "chebyshev/chebyshev_center.c"
 /*----------------------------------------------------------------------------*/
 
 /*----------------------------- RM1 --------------------------------------------
@@ -154,6 +155,11 @@ int main(){
   if (verbose > 0){
     printf("free_host_matrices_har: %lf\n", time_spent);
   }
+
+  // Find center of the polytope using lpsolver
+  double *x_0;
+  x_0 = get_initvalue(N, ME, MI, H_AE, H_bE, H_AI, H_bI);
+  print_matrix_debug(x_0, N, 1);
 
   return 0;
 } // End Main
