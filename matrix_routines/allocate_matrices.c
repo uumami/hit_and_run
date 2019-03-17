@@ -26,3 +26,7 @@ int allocate_matrices_host(double *P, FILE *file, unsigned size){
   return 0;
 
 }
+
+print_matrix_debug(double *){
+
+}

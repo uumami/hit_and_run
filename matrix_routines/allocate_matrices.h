@@ -12,3 +12,5 @@
       in the txt file.
 *******************************************************************************/
 int allocate_matrices_host( double *P, FILE *file, unsigned size);
+
+/* *************************** Print Matrix Debug *************************** */
