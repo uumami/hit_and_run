@@ -32,6 +32,7 @@ unsigned count_rows(FILE *file){
   // 48 and 57 represents the ascii code for 0 and 9 respectibly
     if (ch <= 57 && ch >=48 && aux_line)  {lines++, aux_line=0;}
   }
+  fclose(file);
   return lines;
 }
 
@@ -63,5 +64,6 @@ if(file == NULL){
     // 48 and 57 represents the ascii code for 0 and 9 respectibly
     if (ch <= 57 && ch >=48 && aux_space)  {vars++, aux_space=0;}
   }
+  fclose(file);
   return vars;
 }

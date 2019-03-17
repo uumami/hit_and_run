@@ -37,17 +37,17 @@ static unsigned MI;
 
 /* ------------------------ Pointers to restrictions ------------------------ */
 // Pointer to Matrix of Equalities
-static double *H_AE;
-static double *D_AE;
+double *H_AE;
+double *D_AE;
 // Pointer to Matrix of Inequalities
-static double *H_AI;
-static double *D_AI;
+double *H_AI;
+double *D_AI;
 // Pointer to Vector of Equalities
-static double *H_bE;
-static double *D_bE;
+double *H_bE;
+double *D_bE;
 // Pointer to Vector of Inequalities
-static double *H_bI;
-static double *D_bI;
+double *H_bI;
+double *D_bI;
 /* -------------------------------------------------------------------------- */
 
 /* ******************** allocate_matrices_host_routine *********************  */
@@ -56,35 +56,40 @@ int allocate_matrices_host_har(int verbose){
   unsigned NE = 0;
   unsigned NI = 0;
 
-  // Parse Equality vector for rows
-  FILE *b_eq    = fopen(bE_TXT, "r");
-  ME = count_rows(b_eq);
-  allocate_matrices_host(H_bI, b_eq, ME);
-  fclose(b_eq);
-
   // Parse Inequality vector for rows
   FILE *b_in    = fopen(bI_TXT, "r");
   MI = count_rows(b_in);
-  allocate_matrices_host(H_bI, b_eq, MI);
+  b_in    = fopen(bI_TXT, "r");
+  H_bI = allocate_matrices_host(b_in, MI);
+  print_matrix_debug(H_bI, 1, 1);
   fclose(b_in);
+
+  // Parse Equality vector for rows
+  FILE *b_eq    = fopen(bE_TXT, "r");
+  ME = count_rows(b_eq);
+  b_eq    = fopen(bE_TXT, "r");
+  H_bE = allocate_matrices_host(b_eq, ME);
+  fclose(b_eq);
 
   // Parse the number of variables (columns) in AE
   FILE *a_eq    = fopen(AE_TXT, "r");
   NE       = count_columns(a_eq);
-  allocate_matrices_host(H_bI, b_eq, NE*ME);
+  a_eq    = fopen(AE_TXT, "r");
+  H_AE = allocate_matrices_host(a_eq, NE*ME);
   fclose(a_eq);
 
   // Parse the number of variables (columns) in AI
   FILE *a_in    = fopen(AI_TXT, "r");
   NI = count_columns(a_in);
-  allocate_matrices_host(H_bI, b_eq, NI*MI);
+  a_in    = fopen(AI_TXT, "r");
+  H_AI = allocate_matrices_host(a_in, NI*MI);
   fclose(a_in);
 
   // This condition is only tiggered if some matrix is empty
   if(NI != NE){
-  printf(" THE NUMBER OF VARIABLES IN EACH MATRIX DIFFERS. WE WILL \
-  TAKE THE NUMBER OF VARIABLES (COLUMNS) IN THE EQUALITY RESTRICTIONS \
-  AS %u.\n", N);
+    printf(" THE NUMBER OF VARIABLES IN EACH MATRIX DIFFERS. WE WILL \
+    TAKE THE NUMBER OF VARIABLES (COLUMNS) IN THE EQUALITY RESTRICTIONS \
+    AS %u.\n", N);
   }
   N = NE;
 
@@ -94,6 +99,13 @@ int allocate_matrices_host_har(int verbose){
     printf("Number of (rows) in the Inequality Vector: %u \n", MI );
     printf("Number of variables (columns) in the Equality Matrix is: %u \n", NE );
     printf("Number of variables (columns) in the Inquality Matrix is: %u \n", NI );
+   }
+
+   if (verbose > 1){
+      print_matrix_debug(H_AE, ME, NE);
+      print_matrix_debug(H_bE, ME, 1);
+      print_matrix_debug(H_AI, MI, NI);
+      print_matrix_debug(H_bI, MI, 1);
    }
 
   return 0;
@@ -111,8 +123,12 @@ int free_host_matrices_har(){
 
 /* ******************************* Main ************************************* */
 int main(){
-
-  int verbose = 1;
+/* verbose
+* 0 Only prints errros
+* 1 Prints Dimensions
+* 2 Prints Matrices
+*/
+  int verbose = 2;
 
   // Allocate matrices in host
   allocate_matrices_host_har(verbose);

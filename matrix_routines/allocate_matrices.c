@@ -7,26 +7,37 @@
 // header
 #include "allocate_matrices.h"
 
-int allocate_matrices_host(double *P, FILE *file, unsigned size){
+double * allocate_matrices_host(FILE *file, unsigned size){
 
+  double *P;
   if (file == NULL){
-    printf("The pointer to the file is invalid \n" );
+    printf("The pointer to the file is invalid \n");
   }
 
   P = (double *)malloc(sizeof(double) * size);
   if (P == NULL){
-    printf("The matrix pointer could not be genrated \n" );
+    printf("The matrix pointer could not be genrated \n");
   }
-
   // Reads equality Matrices
   for (int j = 0; j < size; j++){
-    fscanf( file, "%lf", &(P[j]) );
+    fscanf(file, "%lf", &(P[j]));
+    printf("%lf\n", P[j]);
   }
 
-  return 0;
+  return P;
 
 }
 
-print_matrix_debug(double *){
+int print_matrix_debug(double *P, unsigned n, unsigned m){
+  // Recall (n,m) -> (rows,columns)
+  // Print for
+  for(int i = 0; i < n; i++){ // For over the rows
+    for(int j = 0; j < m; j++){ // For over the columns
+      printf(" %lf ", P[j + i*m]);
+    }
+    printf(" \n ");
+  }
+
+  return 0;
 
 }
