@@ -21,7 +21,6 @@ double * allocate_matrices_host(FILE *file, unsigned size){
   // Reads equality Matrices
   for (int j = 0; j < size; j++){
     fscanf(file, "%lf", &(P[j]));
-    printf("%lf\n", P[j]);
   }
 
   return P;
@@ -33,9 +32,9 @@ int print_matrix_debug(double *P, unsigned n, unsigned m){
   // Print for
   for(int i = 0; i < n; i++){ // For over the rows
     for(int j = 0; j < m; j++){ // For over the columns
-      printf(" %lf ", P[j + i*m]);
+      printf("%lf ", P[j + i*m]);
     }
-    printf(" \n ");
+    printf("\n");
   }
 
   return 0;

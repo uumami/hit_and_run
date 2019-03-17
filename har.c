@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <math.h>
+#include <time.h>
 /* -------------------------------------------------------------------------- */
 /*---------------- Scientific Computing Libraires --------------------------- */
 #include <cuda_runtime.h>
@@ -56,20 +57,19 @@ int allocate_matrices_host_har(int verbose){
   unsigned NE = 0;
   unsigned NI = 0;
 
-  // Parse Inequality vector for rows
-  FILE *b_in    = fopen(bI_TXT, "r");
-  MI = count_rows(b_in);
-  b_in    = fopen(bI_TXT, "r");
-  H_bI = allocate_matrices_host(b_in, MI);
-  print_matrix_debug(H_bI, 1, 1);
-  fclose(b_in);
-
   // Parse Equality vector for rows
   FILE *b_eq    = fopen(bE_TXT, "r");
   ME = count_rows(b_eq);
   b_eq    = fopen(bE_TXT, "r");
   H_bE = allocate_matrices_host(b_eq, ME);
   fclose(b_eq);
+
+  // Parse Inequality vector for rows
+  FILE *b_in    = fopen(bI_TXT, "r");
+  MI = count_rows(b_in);
+  b_in    = fopen(bI_TXT, "r");
+  H_bI = allocate_matrices_host(b_in, MI);
+  fclose(b_in);
 
   // Parse the number of variables (columns) in AE
   FILE *a_eq    = fopen(AE_TXT, "r");
@@ -94,17 +94,21 @@ int allocate_matrices_host_har(int verbose){
   N = NE;
 
   // Print
-  if (verbose){
+  if (verbose > 1){
     printf("Number of (rows) in the Equality Vector: %u \n", ME );
     printf("Number of (rows) in the Inequality Vector: %u \n", MI );
     printf("Number of variables (columns) in the Equality Matrix is: %u \n", NE );
     printf("Number of variables (columns) in the Inquality Matrix is: %u \n", NI );
    }
 
-   if (verbose > 1){
+   if (verbose > 2){
+      printf("\n Equality Matrix \n");
       print_matrix_debug(H_AE, ME, NE);
+      printf("\n Equality Vector \n");
       print_matrix_debug(H_bE, ME, 1);
+      printf("\n Inquality Matrix \n");
       print_matrix_debug(H_AI, MI, NI);
+      printf("\n Inequality Vector \n");
       print_matrix_debug(H_bI, MI, 1);
    }
 
@@ -124,17 +128,32 @@ int free_host_matrices_har(){
 /* ******************************* Main ************************************* */
 int main(){
 /* verbose
-* 0 Only prints errros
-* 1 Prints Dimensions
-* 2 Prints Matrices
+* 0 nothing
+* 1 Only time
+* 2 Prints Dimensions
+* 3 Prints Matrices
 */
-  int verbose = 2;
-
+  int verbose = 3;
+  double time_spent;
+  clock_t begin;
+  clock_t end ;
   // Allocate matrices in host
+  begin = clock();
   allocate_matrices_host_har(verbose);
+  end = clock();
+  time_spent = (double)(end - begin) / CLOCKS_PER_SEC;
+  if (verbose > 0){
+    printf("Time allocate_matrices_host_har: %lf\n", time_spent);
+  }
 
   // Free allocated matrices in the host
+  begin = clock();
   free_host_matrices_har();
+  end = clock();
+  time_spent = (double)(end - begin) / CLOCKS_PER_SEC;
+  if (verbose > 0){
+    printf("free_host_matrices_har: %lf\n", time_spent);
+  }
 
   return 0;
 } // End Main
