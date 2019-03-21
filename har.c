@@ -117,6 +117,25 @@ int allocate_matrices_host_har(int verbose){
 
 } // end allocate_matrices_host_har
 
+/********************* interior_point *****************************************/
+double * interior_point(double * x_0,int verbose){
+  // Find center of the polytope using lpsolver
+  x_0 = (double *)malloc(N*sizeof(double));
+  //x_0 = get_initvalue(N, ME, MI, H_AE, H_bE, H_AI, H_bI);
+  //print_matrix_debug(x_0, N, 1);
+  // For now we will ommit chebyshev chebyshev center
+  for(int n = 0; n<N; n++){
+    x_0[n] = 1/N;
+  }
+
+  if (verbose >= 3){
+    printf("\nInterior Point\n");
+    print_matrix_debug(x_0, N, 1);
+    printf("\n");
+  }
+  return x_0;
+}// end of interior
+
 /************************ free allocated host matrices *********************  */
 int free_host_matrices_har(){
   free(H_AE);
@@ -147,6 +166,15 @@ int main(){
     printf("Time allocate_matrices_host_har: %lf\n", time_spent);
   }
 
+  begin = clock();
+  double *x_0;
+  x_0 = interior_point(x_0, verbose);
+  end = clock();
+  time_spent = (double)(end - begin) / CLOCKS_PER_SEC;
+  if (verbose > 0){
+    printf("Time for Chebyshev Center: %lf\n", time_spent);
+  }
+
   // Free allocated matrices in the host
   begin = clock();
   free_host_matrices_har();
@@ -155,11 +183,6 @@ int main(){
   if (verbose > 0){
     printf("free_host_matrices_har: %lf\n", time_spent);
   }
-
-  // Find center of the polytope using lpsolver
-  double *x_0;
-  x_0 = get_initvalue(N, ME, MI, H_AE, H_bE, H_AI, H_bI);
-  print_matrix_debug(x_0, N, 1);
 
   return 0;
 } // End Main

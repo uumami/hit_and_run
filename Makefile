@@ -10,7 +10,7 @@ NVCCFLAGS += -Xcompiler -no-pie
 
 # ----------------------------------------
 har:
-	nvcc  har.c -o hit_run.o  $(LDFLAGS) $(LSOLVER_LIB) $(NVCCFLAGS)
+	nvcc  har.c -o har.o  $(LDFLAGS) $(LSOLVER_LIB) $(NVCCFLAGS)
 
 clean:
 	rm har.o

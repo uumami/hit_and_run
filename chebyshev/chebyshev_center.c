@@ -26,7 +26,7 @@ double norm_2(int n, double *x, int r) {
 
 
 double * get_initvalue(unsigned n, unsigned me, unsigned mi, \
-   double * m_eq, double * b_eq, double * m_in, double * b_in) {
+  double * m_eq, double * b_eq, double * m_in, double * b_in) {
 
   double * x_0;
   x_0 = (double *)malloc(sizeof(double) * n);
@@ -38,8 +38,7 @@ double * get_initvalue(unsigned n, unsigned me, unsigned mi, \
   // Objective function
   double obj_vector[n + 2];
 
-  for (int i = 0; i < (n + 1); i++)
-  {
+  for (int i = 0; i < (n + 1); i++){
     obj_vector[i] = 0.0;
   }
 
@@ -52,10 +51,8 @@ double * get_initvalue(unsigned n, unsigned me, unsigned mi, \
   // Set equality restrictions
   double aux[n + 2];
 
-  for (int i = 0; i < me; i++)
-  {
-    for (int j = 0; j < n; j++)
-    {
+  for (int i = 0; i < me; i++){
+    for (int j = 0; j < n; j++){
       aux[j + 1] = (m_eq[i*n + j]);
     }
 
@@ -65,10 +62,8 @@ double * get_initvalue(unsigned n, unsigned me, unsigned mi, \
   }
 
     // Set inequality restrictions
-  for (int i = 0; i < mi; i++)
-  {
-    for (int j = 0; j < n; j++)
-    {
+  for (int i = 0; i < mi; i++){
+    for (int j = 0; j < n; j++){
       aux[j + 1] = (m_in[i*n + j]);
     }
 
@@ -78,15 +73,12 @@ double * get_initvalue(unsigned n, unsigned me, unsigned mi, \
   }
 
   // Positivity conditions
-  for (int i = 0; i < n; i++)
-  {
+  for (int i = 0; i < n; i++){
     for (int j = 0; j < n; j++)
     {
-      if(i == j)
-      {
+      if(i == j){
         aux[j+1] = 1.0;
-      } else
-      {
+      } else{
         aux[j+1] = 0.0;
       }
     }
