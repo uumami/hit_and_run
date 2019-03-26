@@ -15,6 +15,7 @@
 #include "matrix_routines/allocate_matrices.c"
 #include "har.h"
 #include "chebyshev/chebyshev_center.c"
+#include "direction_creation/random_normal_sample.c"
 /*----------------------------------------------------------------------------*/
 
 /*----------------------------- RM1 --------------------------------------------
@@ -163,7 +164,7 @@ int main(){
   end = clock();
   time_spent = (double)(end - begin) / CLOCKS_PER_SEC;
   if (verbose > 0){
-    printf("Time allocate_matrices_host_har: %lf\n", time_spent);
+    printf("\n ---- Time allocate_matrices_host_har: %lf\n", time_spent);
   }
 
   begin = clock();
@@ -172,16 +173,16 @@ int main(){
   end = clock();
   time_spent = (double)(end - begin) / CLOCKS_PER_SEC;
   if (verbose > 0){
-    printf("Time for Chebyshev Center: %lf\n", time_spent);
+    printf("\n ---- Time for Chebyshev Center: %lf\n", time_spent);
   }
-
+  init_random_seeds();
   // Free allocated matrices in the host
   begin = clock();
   free_host_matrices_har();
   end = clock();
   time_spent = (double)(end - begin) / CLOCKS_PER_SEC;
   if (verbose > 0){
-    printf("free_host_matrices_har: %lf\n", time_spent);
+    printf("\n ---- free_host_matrices_har: %lf\n", time_spent);
   }
 
   return 0;

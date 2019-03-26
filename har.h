@@ -9,6 +9,16 @@
 *******************************************************************************/
 int allocate_matrices_host_har(int verbose);
 
+/* *****************************************************************************
+* This function calculates the Chebyshev center
+* Requirements: allocated_matrices
+* Inputs:
+    + Double pointer to store the initial x
+* Output:
+    + A pointer where the Chebyshevcenter lives
+***************************************************************************** */
+double * interior_point(double * x_0,int verbose);
+
 /***************** allocate_matrices_host_har ********************************
   * This function allocates and saves the matrices in memory.
   * Requirements: allocate_matrices_host_har
