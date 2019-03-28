@@ -53,6 +53,11 @@ double *H_bI;
 double *D_bI;
 /* -------------------------------------------------------------------------- */
 
+/* ------------------------ Direction Vector-Matrix ------------------------- */
+// Global Rnadom Seed
+double * normal_direction;
+/* -------------------------------------------------------------------------- */
+
 /* ******************** allocate_matrices_host_routine *********************  */
 int allocate_matrices_host_har(int verbose){
   // Aux varaible for identifying the number of restrictions
@@ -117,8 +122,9 @@ int allocate_matrices_host_har(int verbose){
   return 0;
 
 } // end allocate_matrices_host_har
+/******************************************************************************/
 
-/********************* interior_point *****************************************/
+/***************************** interior_point *********************************/
 double * interior_point(double * x_0,int verbose){
   // Find center of the polytope using lpsolver
   x_0 = (double *)malloc(N*sizeof(double));
@@ -126,7 +132,7 @@ double * interior_point(double * x_0,int verbose){
   //print_matrix_debug(x_0, N, 1);
   // For now we will ommit chebyshev chebyshev center
   for(int n = 0; n<N; n++){
-    x_0[n] = 1/N;
+    x_0[n] = (double) 1.0/(double)N;
   }
 
   if (verbose >= 3){
@@ -136,6 +142,19 @@ double * interior_point(double * x_0,int verbose){
   }
   return x_0;
 }// end of interior
+/******************************************************************************/
+
+
+/************************ generate_direction_vector ***************************/
+void generate_direction_vector(unsigned vector_size, int verbose){
+  for(int i = 0; i < vector_size; i++){
+    normal_direction[i] = box_muller();
+  }
+  if (verbose > 2){
+    print_matrix_debug(normal_direction, vector_size, 1);
+  }
+}
+/******************************************************************************/
 
 /************************ free allocated host matrices *********************  */
 int free_host_matrices_har(){
@@ -145,6 +164,7 @@ int free_host_matrices_har(){
   free(H_bI);
   return 0;
 }// End free_host_matrices_har
+/******************************************************************************/
 
 /* ******************************* Main ************************************* */
 int main(){
@@ -158,6 +178,7 @@ int main(){
   double time_spent;
   clock_t begin;
   clock_t end ;
+
   // Allocate matrices in host
   begin = clock();
   allocate_matrices_host_har(verbose);
@@ -166,7 +187,9 @@ int main(){
   if (verbose > 0){
     printf("\n ---- Time allocate_matrices_host_har: %lf\n", time_spent);
   }
+  // End matrices in host
 
+  // Find Interior Point
   begin = clock();
   double *x_0;
   x_0 = interior_point(x_0, verbose);
@@ -175,7 +198,26 @@ int main(){
   if (verbose > 0){
     printf("\n ---- Time for Chebyshev Center: %lf\n", time_spent);
   }
+  // End Interiror Point
+
+  // Init random seed
+  begin = clock();
   init_random_seeds();
+  end = clock();
+  time_spent = (double)(end - begin) / CLOCKS_PER_SEC;
+  if (verbose > 0){
+    printf("\n ---- Init Random Seeds: %lf\n", time_spent);
+  }
+  // End init random seed
+
+  normal_direction = (double *)malloc(sizeof(double)*N);
+  begin = clock();
+  generate_direction_vector(N, verbose);
+  end = clock();
+  time_spent = (double)(end - begin) / CLOCKS_PER_SEC;
+  if (verbose > 0){
+    printf("\n ----Generate Normal Direction: %lf\n", time_spent);
+  }
   // Free allocated matrices in the host
   begin = clock();
   free_host_matrices_har();
@@ -184,6 +226,6 @@ int main(){
   if (verbose > 0){
     printf("\n ---- free_host_matrices_har: %lf\n", time_spent);
   }
-
+  // End Free allocated matrices in the host
   return 0;
 } // End Main
