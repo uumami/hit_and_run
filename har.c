@@ -56,7 +56,12 @@ double *D_bI;
 /* ------------------------ Direction Vector-Matrix ------------------------- */
 // Global Rnadom Seed
 double * normal_direction;
+double * x_0;
 /* -------------------------------------------------------------------------- */
+
+/* ------------------------ Cublas Handle ------------------------- */
+// Global Rnadom Seed
+cublasHandle_t handle/* -------------------------------------------------------------------------- */
 
 /* ******************** allocate_matrices_host_routine *********************  */
 int allocate_matrices_host_har(int verbose){
@@ -124,6 +129,10 @@ int allocate_matrices_host_har(int verbose){
 } // end allocate_matrices_host_har
 /******************************************************************************/
 
+/***************************** Create Projection Matrix *********************************/
+
+/******************************************************************************/
+
 /***************************** interior_point *********************************/
 double * interior_point(double * x_0,int verbose){
   // Find center of the polytope using lpsolver
@@ -166,6 +175,17 @@ int free_host_matrices_har(){
 }// End free_host_matrices_har
 /******************************************************************************/
 
+/************************ free allocated device matrices *********************  */
+int free_device_matrices_har(){
+  cudaFree(D_AE);
+  cudaFree(D_AI);
+  cudaFree(D_bE);
+  cudaFree(D_bI);
+  return 0;
+}// End free_device_matrices_har
+/******************************************************************************/
+
+
 /* ******************************* Main ************************************* */
 int main(){
 /* verbose
@@ -191,7 +211,6 @@ int main(){
 
   // Find Interior Point
   begin = clock();
-  double *x_0;
   x_0 = interior_point(x_0, verbose);
   end = clock();
   time_spent = (double)(end - begin) / CLOCKS_PER_SEC;
@@ -218,6 +237,10 @@ int main(){
   if (verbose > 0){
     printf("\n ----Generate Normal Direction: %lf\n", time_spent);
   }
+
+  // Allocate Matrices in the device
+  cublasHandle_t handle ;
+
   // Free allocated matrices in the host
   begin = clock();
   free_host_matrices_har();

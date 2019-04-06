@@ -2,7 +2,6 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-#include <math.h>
 /* -------------------------------------------------------------------------- */
 // header
 #include "allocate_matrices.h"
