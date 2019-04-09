@@ -141,29 +141,32 @@ int allocate_matrices_host_har(int verbose){
 /* ********************* Create Projection Matrix *****************************/
 void projection_matrix(int verbose){
   // Allocate Equality Matrix, remember it is Trasposed
-  allocate_matrices_device(H_AE, &D_AE, ME, N, HANDLE, CU_STAT, STAT);
+  allocate_matrices_device(H_AE, &D_AE, N, ME, HANDLE, CU_STAT, STAT);
 
   // Temporary AE*AE' holder in device
   double * D_AE_AET;
-  CU_STAT = cudaMalloc ((void **)&D_AE_AET , N*N*sizeof(double));
+  CU_STAT = cudaMalloc ((void **)&D_AE_AET , ME*ME*sizeof(double));
 
   // Operation AE*AE' -> D_AE_AET
-  double al = 1.0, bet = 0.0; // Init scalars for level 3 operations
-  // DO the multiplication and store it in D_AE_AET
-  STAT= cublasDgemm(HANDLE, CUBLAS_OP_N, CUBLAS_OP_T, ME, ME, N, &al, D_AE,
-  ME, D_AE, N, &bet, D_AE_AET, ME);
+  double al = 1.0;
+  double bet = 0.0; // Init scalars for level 3 operations
+  // Do the multiplication and store it in D_AE_AET
+  STAT= cublasDgemm(HANDLE, CUBLAS_OP_T, CUBLAS_OP_N, ME, ME, N, &al, D_AE,
+  N, D_AE, N, &bet, D_AE_AET, ME);
+
+  // We need to bring back the matrix from the GPU sin we use blas routines
+  double *H_AE_AET = (double *)malloc(ME*ME*sizeof(double));
+  STAT = cublasGetMatrix (ME, ME, sizeof(double), D_AE_AET, ME, H_AE_AET, ME);
 
   if( verbose > 2){
-    // This matrix can live exclusevely in the gpu
-    double *c = (double *)malloc(ME*ME*sizeof(double));
-    STAT = cublasGetMatrix (ME, ME, sizeof(double), D_AE_AET, ME, c, ME);
     printf("\n Projection Matrix \n");
-    print_matrix_debug(c, ME, ME);
-    free(c);
+    print_matrix_debug(H_AE_AET, ME, ME);
   }
-
-  // Free temporary matrix AE*AE'
+  calculate_inverse_qr(H_AE_AET, ME);
+  // Free Temporary Matrices
   cudaFree(D_AE_AET);
+  free(H_AE_AET);
+
 }
 /******************************************************************************/
 
@@ -281,7 +284,7 @@ int main(){
   end = clock();
   time_spent = (double)(end - begin) / CLOCKS_PER_SEC;
   if (verbose > 0){
-    printf("\n ---- projection_matrix: %lf\n", time_spent);
+    printf("\n ---- Projection Matrix: %lf\n", time_spent);
   } // End calculate projection Matrix
 
   // Free allocated matrices in the host

@@ -1,8 +1,6 @@
 /* NOTES
   THis code is based on mygpu.pdf
 */
-
-
 /* ----------------------- Compiler Libraries ------------------------------- */
 #include <stdlib.h>
 #include <stdio.h>
@@ -12,10 +10,9 @@
 #include "cublas_v2.h"
 #include <cusolverDn.h>
 #include <cblas.h>
-# define BILLION 1000000000L;
 /* ------------------------------ Header ------------------------------------ */
-
 void solver_qr(double *A, double *B, unsigned m){
+
   // Context Handler
   cusolverDnHandle_t cusolverH; // cusolver handle
   cublasHandle_t cublasH;// cublas handle
@@ -35,30 +32,42 @@ void solver_qr(double *A, double *B, unsigned m){
   const int nrhs = 1; // number of right hand sides
 
   // Init scalars
-  double al=1.0, bet=0.0;
-  int incx =1 , incy =1;
-  cblas_dgemv (CblasColMajor, CblasNoTrans, m, m, al, A, m, B1, incx, bet, B,
-    incy); // B = A * B1
+  double al=1.0;
+  double bet=0.0;
+  int incx =1;
+  int incy =1;
 
-  // Destrpy Cublas context
-  cublasDestroy (cublasH);
-  cusolverDnDestroy (cusolverH);
+  // Init auxiliary matrices
+  double *B1;
+  double *X;
+  B1 = (double *) malloc(ldb*nrhs*sizeof(double));
+  X = (double *) malloc(ldb*nrhs*sizeof(double));
+  cblas_dgemv (CblasColMajor, CblasNoTrans, m, m, al, A, m, B1, incx, bet, B, incy); // B = A * B1
+
+  // Destroy Cublas context
+  free(B1);
+  free(X);
+  //cublasDestroy(cublasH);
+  //cusolverDnDestroy(cusolverH);
 
 }
 
 void calculate_inverse_qr(double *A, unsigned m){
-
   // Create Identity Matrix for the inverse
-  double *I;
-  I = malloc(m*m*sizeof(double));
+  double * ID;
+  m = (int) m;
+  ID = (double *) malloc(m*m*sizeof(double));
   for(int i=0; i<m; i++){
-    for(int j=0: j<m; j++){
-      if(i==j){I[i*m + j] = 1.0;}
-      else{ I[i*m + j] = 0.0;}
+    for(int j=0; j<m; j++){
+      if(i==j){
+        ID[i*m + j] = 1.0;
+      }
+      else{
+        ID[i*m + j] = 0.0;
+      }
     }
   }
   // Call solver_qr routine with identty matrix as RHS
-  solver_qr(A, I, m);
-
-  free(I);
+  solver_qr(A, ID, m);
+  free(ID);
 }
