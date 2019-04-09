@@ -12,7 +12,7 @@
 #include <cblas.h>
 /* ------------------------------ Header ------------------------------------ */
 void solver_qr(double *A, double *B, unsigned m){
-
+  // AX = B
   // Context Handler
   cusolverDnHandle_t cusolverH; // cusolver handle
   cublasHandle_t cublasH;// cublas handle
@@ -32,23 +32,58 @@ void solver_qr(double *A, double *B, unsigned m){
   const int nrhs = 1; // number of right hand sides
 
   // Init scalars
-  double al=1.0;
-  double bet=0.0;
-  int incx =1;
-  int incy =1;
+  double al=1.0, bet=0.0;
+  int incx =1, incy =1;
 
   // Init auxiliary matrices
   double *B1;
   double *X;
   B1 = (double *) malloc(ldb*nrhs*sizeof(double));
   X = (double *) malloc(ldb*nrhs*sizeof(double));
-  cblas_dgemv (CblasColMajor, CblasNoTrans, m, m, al, A, m, B1, incx, bet, B, incy); // B = A * B1
+  // Find B1
+  cblas_dgemv (CblasColMajor, CblasNoTrans, m, m, al, A, m, B1, incx, bet, B,
+  incy); // B = A * B1
 
-  // Destroy Cublas context
-  free(B1);
-  free(X);
-  //cublasDestroy(cublasH);
-  //cusolverDnDestroy(cusolverH);
+  // declare arrays on the device
+  double * d_A, * d_B, * d_tau, * d_work;
+  int * devInfo ;
+  // device version of info
+  int lwork = 0;
+  // workspace size
+  int info_gpu = 0;
+  // device info copied to host
+  const double one = 1;
+  // create cusolver and cublas handles
+  cusolver_status = cusolverDnCreate(&cusolverH);
+  cublas_status = cublasCreate (&cublasH);
+  // prepare memory on the device
+  cudaStat1 = cudaMalloc ((void **)&d_A, sizeof(double)*lda*m);
+  cudaStat2 = cudaMalloc ((void **)&d_tau, sizeof(double)*m);
+  cudaStat3 = cudaMalloc ((void **)&d_B, sizeof(double)*ldb*nrhs);
+  cudaStat4 = cudaMalloc ((void **)&devInfo, sizeof(int));
+
+  cudaStat1 = cudaMemcpy (d_A, A, sizeof(double)*lda*m,
+  cudaMemcpyHostToDevice);//A - > d_A
+  cudaStat2 = cudaMemcpy ( d_B ,B , sizeof ( double )* ldb * nrhs ,
+  cudaMemcpyHostToDevice); // B - > d_B
+
+// compute buffer size for geqrf and prepare worksp . on device
+cusolver_status = cusolverDnDgeqrf_bufferSize(cusolverH, m, m, d_A, lda, &lwork);
+cudaStat1 = cudaMalloc((void**)&d_work, sizeof(double)*lwork);
+cusolver_status = cusolverDnDgeqrf(cusolverH, m, m, d_A, lda, d_tau, d_work,
+  lwork, devInfo);
+cudaStat1 = cudaDeviceSynchronize();
+// devInfo -> info_gpu
+cudaStat1 = cudaMemcpy(&info_gpu, devInfo, sizeof(int), cudaMemcpyDeviceToHost);
+// check error code of geqrf function
+if(info_gpu){
+  printf ( "\n after geqrf : info_gpu = %d \n " , info_gpu );
+}
+// Destroy Cublas context
+free(B1);
+free(X);
+cublasDestroy(cublasH);
+cusolverDnDestroy(cusolverH);
 
 }
 
