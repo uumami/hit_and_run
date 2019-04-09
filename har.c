@@ -16,6 +16,7 @@
 #include "har.h"
 #include "chebyshev/chebyshev_center.c"
 #include "direction_creation/random_normal_sample.c"
+#include "matrix_routines_device/allocate_matrices_device.c"
 /*----------------------------------------------------------------------------*/
 
 /*----------------------------- RM1 --------------------------------------------
@@ -60,8 +61,13 @@ double * x_0;
 /* -------------------------------------------------------------------------- */
 
 /* ------------------------ Cublas Handle ------------------------- */
-// Global Rnadom Seed
-cublasHandle_t handle/* -------------------------------------------------------------------------- */
+// Global handle
+cublasHandle_t HANDLE;
+// cudaMalloc status
+cudaError_t CU_STAT ;
+// CUBLAS functions status
+cublasStatus_t STAT ;
+/* ------------------------------------------------------------------------- */
 
 /* ******************** allocate_matrices_host_routine *********************  */
 int allocate_matrices_host_har(int verbose){
@@ -129,8 +135,31 @@ int allocate_matrices_host_har(int verbose){
 } // end allocate_matrices_host_har
 /******************************************************************************/
 
-/***************************** Create Projection Matrix *********************************/
+/* ********************* Create Projection Matrix *****************************/
+void projection_matrix(int verbose){
+  // Allocate Equality Matrix, remember it is Trasposed
+  D_AE = allocate_matrices_device(H_AE, D_AE, ME, N, HANDLE, CU_STAT, STAT);
 
+  // Temporary AE*AE' holder in device
+  double * D_AE_AET;
+  CU_STAT = cudaMalloc ((void **)&D_AE_AET , N*N*sizeof(double));
+
+  // Operation AE*AE' -> D_AE_AET
+  double al = 1.0;
+  double bet = 0.0;
+  STAT= cublasDgemm(HANDLE, CUBLAS_OP_N, CUBLAS_OP_T, ME, ME, N, &al, D_AE,
+  ME, D_AE, N, &bet, D_AE_AET, ME);
+
+  double *c = (double *)malloc(ME*ME*sizeof(double));
+  STAT = cublasGetMatrix (ME, ME, sizeof(double), D_AE_AET, ME, c, ME);
+
+  if( verbose > 2){
+    printf("\n Projection Matrix \n");
+    print_matrix_debug(c, ME, ME);
+  }
+  // Free temporary matrix AE*AE'
+  cudaFree(D_AE_AET);
+}
 /******************************************************************************/
 
 /***************************** interior_point *********************************/
@@ -178,9 +207,9 @@ int free_host_matrices_har(){
 /************************ free allocated device matrices *********************  */
 int free_device_matrices_har(){
   cudaFree(D_AE);
-  cudaFree(D_AI);
-  cudaFree(D_bE);
-  cudaFree(D_bI);
+  //cudaFree(D_AI);
+  //cudaFree(D_bE);
+  //cudaFree(D_bI);
   return 0;
 }// End free_device_matrices_har
 /******************************************************************************/
@@ -238,8 +267,17 @@ int main(){
     printf("\n ----Generate Normal Direction: %lf\n", time_spent);
   }
 
-  // Allocate Matrices in the device
-  cublasHandle_t handle ;
+  // Create cuda context
+  STAT = cublasCreate (&HANDLE);
+
+  // Calculate Projection Matrix
+  begin = clock();
+  projection_matrix(verbose);
+  end = clock();
+  time_spent = (double)(end - begin) / CLOCKS_PER_SEC;
+  if (verbose > 0){
+    printf("\n ---- projection_matrix: %lf\n", time_spent);
+  } // End calculate projection Matrix
 
   // Free allocated matrices in the host
   begin = clock();
@@ -250,5 +288,16 @@ int main(){
     printf("\n ---- free_host_matrices_har: %lf\n", time_spent);
   }
   // End Free allocated matrices in the host
+
+  // Free allocated matrices in the host
+  begin = clock();
+  free_device_matrices_har();
+  end = clock();
+  time_spent = (double)(end - begin) / CLOCKS_PER_SEC;
+  if (verbose > 0){
+    printf("\n ---- free_device_matrices_har: %lf\n", time_spent);
+  }
+  // End Free allocated matrices in the host
+
   return 0;
 } // End Main

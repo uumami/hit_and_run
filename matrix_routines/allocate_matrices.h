@@ -3,10 +3,11 @@
 /***************************  count_rows *************************************
   * This function allocates the restriction matrices in the GPU
   * Requirements: None
+  * Observations: Matrices will bew stored in an array fashion, no two Dimension
+  al arrays used in this routines.
   * Inputs:
-      + The separtor between lines (rows) must be different from the varaible
-        (column) separator. We recomend using the new line character.
-      + Pointer to the txt File.
+      + SIZE (unsigned): number of elements in the matrix
+      + file (FILE *)Pointer to the txt File.
   * Output:
       + Returns the address where the matrix will live.
 *******************************************************************************/

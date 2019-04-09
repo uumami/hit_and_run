@@ -1,3 +1,8 @@
+/*
+  The cuda handler is initialized in har.c main function. This handler is unsed
+  during all the computation time. 
+*/
+
 /***************** allocate_matrices_host_har ********************************
   * This function allocates and saves the matrices in memory.
   * Requirements: allocate_matrices

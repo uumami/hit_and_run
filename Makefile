@@ -11,7 +11,7 @@ NVCCFLAGS += -Xcompiler -no-pie
 
 # ----------------------------------------
 har:
-	nvcc  har.c -o har.o  $(LDFLAGS) $(LSOLVER_LIB) $(PCG_GEN) $(NVCCFLAGS) 
+	nvcc  har.c -o har.o  $(LDFLAGS) $(LSOLVER_LIB) $(PCG_GEN) $(NVCCFLAGS) -lcublas 
 
 clean:
 	rm har.o
