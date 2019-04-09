@@ -8,6 +8,8 @@
 /*---------------- Scientific Computing Libraires --------------------------- */
 #include <cuda_runtime.h>
 #include "cublas_v2.h"
+#include <cusolverDn.h>
+#include <cblas.h>
 /* -------------------------------------------------------------------------- */
 
 /* ----------------------- My routines -------------------------------------- */
@@ -17,6 +19,7 @@
 #include "chebyshev/chebyshev_center.c"
 #include "direction_creation/random_normal_sample.c"
 #include "matrix_routines_device/allocate_matrices_device.c"
+#include "matrix_routines_device/multiply_matrices_device.c"
 /*----------------------------------------------------------------------------*/
 
 /*----------------------------- RM1 --------------------------------------------
@@ -138,25 +141,27 @@ int allocate_matrices_host_har(int verbose){
 /* ********************* Create Projection Matrix *****************************/
 void projection_matrix(int verbose){
   // Allocate Equality Matrix, remember it is Trasposed
-  D_AE = allocate_matrices_device(H_AE, D_AE, ME, N, HANDLE, CU_STAT, STAT);
+  allocate_matrices_device(H_AE, &D_AE, ME, N, HANDLE, CU_STAT, STAT);
 
   // Temporary AE*AE' holder in device
   double * D_AE_AET;
   CU_STAT = cudaMalloc ((void **)&D_AE_AET , N*N*sizeof(double));
 
   // Operation AE*AE' -> D_AE_AET
-  double al = 1.0;
-  double bet = 0.0;
+  double al = 1.0, bet = 0.0; // Init scalars for level 3 operations
+  // DO the multiplication and store it in D_AE_AET
   STAT= cublasDgemm(HANDLE, CUBLAS_OP_N, CUBLAS_OP_T, ME, ME, N, &al, D_AE,
   ME, D_AE, N, &bet, D_AE_AET, ME);
 
-  double *c = (double *)malloc(ME*ME*sizeof(double));
-  STAT = cublasGetMatrix (ME, ME, sizeof(double), D_AE_AET, ME, c, ME);
-
   if( verbose > 2){
+    // This matrix can live exclusevely in the gpu
+    double *c = (double *)malloc(ME*ME*sizeof(double));
+    STAT = cublasGetMatrix (ME, ME, sizeof(double), D_AE_AET, ME, c, ME);
     printf("\n Projection Matrix \n");
     print_matrix_debug(c, ME, ME);
+    free(c);
   }
+
   // Free temporary matrix AE*AE'
   cudaFree(D_AE_AET);
 }
@@ -217,12 +222,12 @@ int free_device_matrices_har(){
 
 /* ******************************* Main ************************************* */
 int main(){
-/* verbose
-* 0 nothing
-* 1 Only time
-* 2 Prints Dimensions
-* 3 Prints Matrices
-*/
+  /* verbose
+  * 0 nothing
+  * 1 Only time
+  * 2 Prints Dimensions
+  * 3 Prints Matrices
+  */
   int verbose = 3;
   double time_spent;
   clock_t begin;

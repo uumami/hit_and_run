@@ -14,6 +14,6 @@
   * Output:
       + None (int), the matrix is allocated in GPU memory.
 *******************************************************************************/
-double *allocate_matrices_device(double * h_matrix, double * d_matrix,
+int allocate_matrices_device(double * h_matrix, double ** d_matrix,
 unsigned m, unsigned n, cublasHandle_t handle, cudaError_t cudaStat,
 cublasStatus_t stat );
