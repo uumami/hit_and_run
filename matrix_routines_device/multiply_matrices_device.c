@@ -10,8 +10,9 @@
 #include "cublas_v2.h"
 #include <cusolverDn.h>
 #include <cblas.h>
+#include <lapacke.h>
 /* ------------------------------ Header ------------------------------------ */
-void solver_qr(double *A, double *B, unsigned m){
+void solver_qr_legacy(double *A, double *B, unsigned m){
   // AX = B
   // Context Handler
   cusolverDnHandle_t cusolverH; // cusolver handle
@@ -45,8 +46,8 @@ void solver_qr(double *A, double *B, unsigned m){
   incy); // B = A * B1
 
   // declare arrays on the device
-  double * d_A, * d_B, * d_tau, * d_work;
-  int * devInfo ;
+  double *d_A, *d_B, *d_tau, *d_work;
+  int *devInfo ;
   // device version of info
   int lwork = 0;
   // workspace size
@@ -64,7 +65,7 @@ void solver_qr(double *A, double *B, unsigned m){
 
   cudaStat1 = cudaMemcpy (d_A, A, sizeof(double)*lda*m,
   cudaMemcpyHostToDevice);//A - > d_A
-  cudaStat2 = cudaMemcpy ( d_B ,B , sizeof ( double )* ldb * nrhs ,
+  cudaStat2 = cudaMemcpy ( d_B ,B , sizeof(double)*ldb*nrhs ,
   cudaMemcpyHostToDevice); // B - > d_B
 
 // compute buffer size for geqrf and prepare worksp . on device
@@ -79,9 +80,35 @@ cudaStat1 = cudaMemcpy(&info_gpu, devInfo, sizeof(int), cudaMemcpyDeviceToHost);
 if(info_gpu){
   printf ( "\n after geqrf : info_gpu = %d \n " , info_gpu );
 }
+
+// compute d_B = Q ^ T * B using ormqr function
+cusolver_status=cusolverDnDormqr(cusolverH, CUBLAS_SIDE_LEFT, CUBLAS_OP_T, m,
+nrhs, m, d_A, lda, d_tau, d_B, ldb, d_work, lwork, devInfo);
+
+cudaStat1 = cudaDeviceSynchronize();
+
+cudaStat1 = cudaMemcpy(&info_gpu, devInfo, sizeof(int), cudaMemcpyDeviceToHost);
+if(info_gpu){
+  printf ( " after ormqr : info_gpu = %d \n " , info_gpu );
+}
+
+// write the original system A * X =( Q * R )* X = B in the form
+// R * X = Q ^ T * B and solve the obtained triangular system
+cublas_status = cublasDtrsm(cublasH, CUBLAS_SIDE_LEFT,
+CUBLAS_FILL_MODE_UPPER, CUBLAS_OP_N, CUBLAS_DIAG_NON_UNIT,
+m, nrhs, &one, d_A, lda, d_B, ldb);
+
+cudaStat1 = cudaDeviceSynchronize();
+cudaStat1 = cudaMemcpy(X, d_B, sizeof(double)*ldb*nrhs, cudaMemcpyDeviceToHost);
+// copy d_B - > X
+printf("\n Inverse: %g \n", X[0]);
 // Destroy Cublas context
 free(B1);
 free(X);
+cudaFree(d_A);
+cudaFree(d_tau);
+cudaFree (devInfo);
+cudaFree(d_work);
 cublasDestroy(cublasH);
 cusolverDnDestroy(cusolverH);
 
@@ -103,6 +130,5 @@ void calculate_inverse_qr(double *A, unsigned m){
     }
   }
   // Call solver_qr routine with identty matrix as RHS
-  solver_qr(A, ID, m);
   free(ID);
 }

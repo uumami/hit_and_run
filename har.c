@@ -8,8 +8,6 @@
 /*---------------- Scientific Computing Libraires --------------------------- */
 #include <cuda_runtime.h>
 #include "cublas_v2.h"
-#include <cusolverDn.h>
-#include <cblas.h>
 /* -------------------------------------------------------------------------- */
 
 /* ----------------------- My routines -------------------------------------- */
@@ -157,13 +155,13 @@ void projection_matrix(int verbose){
   // We need to bring back the matrix from the GPU sin we use blas routines
   double *H_AE_AET = (double *)malloc(ME*ME*sizeof(double));
   STAT = cublasGetMatrix (ME, ME, sizeof(double), D_AE_AET, ME, H_AE_AET, ME);
-
+  cudaFree(D_AE_AET); // We dont need this matrix in
   if( verbose > 2){
     printf("\n Projection Matrix \n");
     print_matrix_debug(H_AE_AET, ME, ME);
   }
+  // Inverse of AA'
   calculate_inverse_qr(H_AE_AET, ME);
-  // Free Temporary Matrices
   cudaFree(D_AE_AET);
   free(H_AE_AET);
 
@@ -246,7 +244,8 @@ int main(){
   }
   // End matrices in host
 
-  // Find Interior Point
+  // Find Interior Pointprintf ( "\n after geqrf : info_gpu = %d \n " , info_gpu );
+
   begin = clock();
   x_0 = interior_point(x_0, verbose);
   end = clock();
