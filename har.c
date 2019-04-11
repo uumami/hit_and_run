@@ -154,11 +154,12 @@ int allocate_matrices_host_har(int verbose){
 /* ********************* Create Projection Matrix *****************************/
 void projection_matrix(int verbose){
   // Allocate AE matrix via pinned MAGMA routine
-  H_AE = pin_matrices_host(&H_AE, ME, N, queue, dev);
+  H_AE = pin_matrices_host(&H_AE, ME, N);
   if(verbose >2){
     printf("\n Matrix Equality allocated via MAGMA pinned routine \n" );
     print_matrix_debug(H_AE, ME, N);
   }
+  allocate_matrices_device(H_AE, &D_AE, ME, N, queue, dev);
 }
 /******************************************************************************/
 
@@ -207,7 +208,7 @@ int free_host_matrices_har(){
 
 /************************ free allocated device matrices *********************  */
 int free_device_matrices_har(){
-
+  magma_free (D_AE);
   return 0;
 }// End free_device_matrices_har
 /******************************************************************************/

@@ -18,16 +18,15 @@ unsigned m, unsigned n, magma_queue_t queue, magma_int_t dev){
   magma_int_t m_n = n;
 
   magma_int_t err ; // error handler
-  // Copy matrix to device
-  //cudaStat = cudaMalloc ((void **)&(*d_matrix) , m*n*sizeof(*h_matrix ));
-  // cp h_matrix - > d_matrix
-  //stat = cublasSetMatrix (m, n, sizeof(*h_matrix), h_matrix, m, *d_matrix, m);
+
+  err = magma_smalloc (&(*d_a) , m_m*m_n ); // allocate memory in device
+  // Remember the matrix are col-major, then we allocate the transpose
+  magma_dsetmatrix (n, m_m, h_matrix, m_n, **d_matrix, m_n, queue);
   return  1;
 }
 
 
-double * pin_matrices_host(double **h_matrix, unsigned m, unsigned n,
-  magma_queue_t queue, magma_int_t dev){
+double * pin_matrices_host(double **h_matrix, unsigned m, unsigned n){
 
   // Recall: m->row, n->column
   magma_int_t m_m =  m;
@@ -40,7 +39,6 @@ double * pin_matrices_host(double **h_matrix, unsigned m, unsigned n,
   err = magma_dmalloc_pinned(&pinned_matrix, m_m*m_n);
   for( int i=0; i < m*n; i++)
   {
-    printf("\n Check two \n");
     pinned_matrix[i] = (*h_matrix)[i];
   }
   free(*h_matrix);
