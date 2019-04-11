@@ -7,7 +7,9 @@
 /* -------------------------------------------------------------------------- */
 /*---------------- Scientific Computing Libraires --------------------------- */
 #include <cuda_runtime.h>
-#include "cublas_v2.h"
+#include "magma_v2.h"
+#include <cuda.h>
+#include "magma_lapack.h"
 /* -------------------------------------------------------------------------- */
 
 /* ----------------------- My routines -------------------------------------- */
@@ -61,14 +63,27 @@ double * normal_direction;
 double * x_0;
 /* -------------------------------------------------------------------------- */
 
-/* ------------------------ Cublas Handle ------------------------- */
-// Global handle
-cublasHandle_t HANDLE;
-// cudaMalloc status
-cudaError_t CU_STAT ;
-// CUBLAS functions status
-cublasStatus_t STAT ;
+/* ---------------------------- MAGMA queue --------------------------------- */
+// Global queue for magma
+magma_queue_t queue;// cudaMalloc status
+magma_int_t dev;// CUBLAS functions status
 /* ------------------------------------------------------------------------- */
+
+/* *************************** init_magma *********************************** */
+void init_magma(){
+  magma_init (); // initialize Magma
+  queue = NULL ;
+  dev = 0;
+  magma_queue_create(dev, &queue);
+}
+/******************************************************************************/
+
+/* *************************** finalize_magma ******************************* */
+void finalize_magma(){
+  magma_queue_destroy(queue); // destroy queue
+  magma_finalize (); // finalize Magma
+}
+/******************************************************************************/
 
 /* ******************** allocate_matrices_host_routine *********************  */
 int allocate_matrices_host_har(int verbose){
@@ -138,33 +153,12 @@ int allocate_matrices_host_har(int verbose){
 
 /* ********************* Create Projection Matrix *****************************/
 void projection_matrix(int verbose){
-  // Allocate Equality Matrix, remember it is Trasposed
-  allocate_matrices_device(H_AE, &D_AE, N, ME, HANDLE, CU_STAT, STAT);
-
-  // Temporary AE*AE' holder in device
-  double * D_AE_AET;
-  CU_STAT = cudaMalloc ((void **)&D_AE_AET , ME*ME*sizeof(double));
-
-  // Operation AE*AE' -> D_AE_AET
-  double al = 1.0;
-  double bet = 0.0; // Init scalars for level 3 operations
-  // Do the multiplication and store it in D_AE_AET
-  STAT= cublasDgemm(HANDLE, CUBLAS_OP_T, CUBLAS_OP_N, ME, ME, N, &al, D_AE,
-  N, D_AE, N, &bet, D_AE_AET, ME);
-
-  // We need to bring back the matrix from the GPU sin we use blas routines
-  double *H_AE_AET = (double *)malloc(ME*ME*sizeof(double));
-  STAT = cublasGetMatrix (ME, ME, sizeof(double), D_AE_AET, ME, H_AE_AET, ME);
-  cudaFree(D_AE_AET); // We dont need this matrix in
-  if( verbose > 2){
-    printf("\n Projection Matrix \n");
-    print_matrix_debug(H_AE_AET, ME, ME);
+  // Allocate AE matrix via pinned MAGMA routine
+  H_AE = pin_matrices_host(&H_AE, ME, N, queue, dev);
+  if(verbose >2){
+    printf("\n Matrix Equality allocated via MAGMA pinned routine \n" );
+    print_matrix_debug(H_AE, ME, ME);
   }
-  // Inverse of AA'
-  calculate_inverse_qr(H_AE_AET, ME);
-  cudaFree(D_AE_AET);
-  free(H_AE_AET);
-
 }
 /******************************************************************************/
 
@@ -202,7 +196,8 @@ void generate_direction_vector(unsigned vector_size, int verbose){
 
 /************************ free allocated host matrices *********************  */
 int free_host_matrices_har(){
-  free(H_AE);
+  //free(H_AE);
+  magma_free_pinned(H_AE);
   free(H_AI);
   free(H_bE);
   free(H_bI);
@@ -212,10 +207,7 @@ int free_host_matrices_har(){
 
 /************************ free allocated device matrices *********************  */
 int free_device_matrices_har(){
-  cudaFree(D_AE);
-  //cudaFree(D_AI);
-  //cudaFree(D_bE);
-  //cudaFree(D_bI);
+
   return 0;
 }// End free_device_matrices_har
 /******************************************************************************/
@@ -274,8 +266,8 @@ int main(){
     printf("\n ----Generate Normal Direction: %lf\n", time_spent);
   }
 
-  // Create cuda context
-  STAT = cublasCreate (&HANDLE);
+  // Create MAGMA Context
+  init_magma();
 
   // Calculate Projection Matrix
   begin = clock();
@@ -306,5 +298,7 @@ int main(){
   }
   // End Free allocated matrices in the host
 
+  // End MAGMA context
+  finalize_magma();
   return 0;
 } // End Main
