@@ -157,7 +157,7 @@ void projection_matrix(int verbose){
   H_AE = pin_matrices_host(&H_AE, ME, N, queue, dev);
   if(verbose >2){
     printf("\n Matrix Equality allocated via MAGMA pinned routine \n" );
-    print_matrix_debug(H_AE, ME, ME);
+    print_matrix_debug(H_AE, ME, N);
   }
 }
 /******************************************************************************/
@@ -268,6 +268,7 @@ int main(){
 
   // Create MAGMA Context
   init_magma();
+
 
   // Calculate Projection Matrix
   begin = clock();

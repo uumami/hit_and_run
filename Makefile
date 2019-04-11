@@ -1,8 +1,8 @@
 CUDADIR 			= /usr/local/cuda
-MAGMADIR			= /usr/local/magma
-LSOLVER_LIB		= ./lpsolve/liblpsolve55.a -ldl
+MAGMADIR			= /home/mario/Documents/github/hit_and_run/magma-2.5.0
+LSOLVER_LIB		    = ./lpsolve/liblpsolve55.a -ldl
 PCG_GEN				= ./direction_creation/pcg-c-0.94/src/libpcg_random.a
-OPENBLASDIR 	= /usr/lib/x86_64-linux-gnu/openblas
+OPENBLASDIR 	    = /usr/lib/x86_64-linux-gnu/openblas
 
 # ----------------------------------------
 # Flags and paths to MAGMA, CUDA, and LAPACK/BLAS

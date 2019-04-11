@@ -40,7 +40,8 @@ double * pin_matrices_host(double **h_matrix, unsigned m, unsigned n,
   err = magma_dmalloc_pinned(&pinned_matrix, m_m*m_n);
   for( int i=0; i < m*n; i++)
   {
-    pinned_matrix[i] = *h_matrix[i];
+    printf("\n Check two \n");
+    pinned_matrix[i] = (*h_matrix)[i];
   }
   free(*h_matrix);
   return  pinned_matrix;
