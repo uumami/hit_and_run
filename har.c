@@ -155,11 +155,15 @@ int allocate_matrices_host_har(int verbose){
 void projection_matrix(int verbose){
   // Allocate AE matrix via pinned MAGMA routine
   H_AE = pin_matrices_host(&H_AE, ME, N);
+
   if(verbose >2){
     printf("\n Matrix Equality allocated via MAGMA pinned routine \n" );
     print_matrix_debug(H_AE, ME, N);
   }
-  allocate_matrices_device(H_AE, &D_AE, ME, N, queue, dev);
+  // Allocate AE in device
+  allocate_matrices_device(H_AE, &D_AE, N, ME, queue, dev);
+  // Obtain AA'
+
 }
 /******************************************************************************/
 
