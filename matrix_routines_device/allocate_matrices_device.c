@@ -10,23 +10,29 @@
 /* ------------------------------ Header ------------------------------------ */
 #include "allocate_matrices_device.h"
 
-int allocate_matrices_device(double *h_matrix, double **d_matrix,
-unsigned m, unsigned n, magma_queue_t queue, magma_int_t dev){
-
+double * transpose_host_matrix(double *h_matrix, unsigned m, unsigned n){
   // Recall: m->row, n->column
-  magma_int_t m_m = m;
-  magma_int_t m_n = n;
+  magma_int_t m_m =  m;
+  magma_int_t m_n =  n;
 
   magma_int_t err ; // error handler
 
-  err = magma_dmalloc (&(*d_matrix) , m_m*m_n ); // allocate memory in device
-  // Remember the matrix are col-major, then we allocate the transpose
-  magma_dsetmatrix (m_n, m_m, h_matrix, m_n, *d_matrix, m_n, queue);
-  return  0;
+  double *pinned_matrix;// Pin Matrix to device
+
+  err = magma_dmalloc_pinned(&pinned_matrix, m_m*m_n);
+  int l = 0; //index for new matrix
+  for( int j=0; j < n; j++)
+  {
+    for(int i = 0; i < m; i++){
+      pinned_matrix[l] = h_matrix[i*m + j];
+      l++;
+    }
+  }
+  return  pinned_matrix;
 }
 
-int allocate_matrices_device_same_dim(double *h_matrix, double **d_matrix,
-unsigned m, unsigned n, magma_queue_t queue, magma_int_t dev){
+int allocate_matrices_device(double *h_matrix, double **d_matrix,
+unsigned m, unsigned n, magma_queue_t queue, magma_int_t dev, int trans){
 
   // Recall: m->row, n->column
   magma_int_t m_m = m;
@@ -34,9 +40,16 @@ unsigned m, unsigned n, magma_queue_t queue, magma_int_t dev){
 
   magma_int_t err ; // error handler
 
-  err = magma_dmalloc (&(*d_matrix) , m_m*m_n ); // allocate memory in device
-  // Remember the matrix are col-major, then we allocate the transpose
-  magma_dsetmatrix_transpose(m_n, m_m, h_matrix, m_n, *d_matrix, m_n, queue);
+  if(trans != 1){
+    err = magma_dmalloc (&(*d_matrix) , m_m*m_n ); // allocate memory in device
+    // Remember the matrix are col-major, then we allocate the transpose
+    magma_dsetmatrix (m_n, m_m, h_matrix, m_n, *d_matrix, m_n, queue);
+  }else if(trans==1){
+    double * t_h_matrix;
+    t_h_matrix = transpose_host_matrix(h_matrix, m, n);
+    magma_dsetmatrix (m_m, m_n, h_matrix, m_m, *d_matrix, m_m, queue);
+    free(t_h_matrix);
+  }
   return  0;
 }
 

@@ -161,7 +161,7 @@ void projection_matrix(int verbose){
     print_matrix_debug(H_AE, ME, N);
   }
   // Allocate AE in device
-  allocate_matrices_device(H_AE, &D_AE, N, ME, queue, dev);
+  allocate_matrices_device(H_AE, &D_AE, ME, N, queue, dev, 1);
   // Obtain AA'
 
 }
