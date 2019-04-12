@@ -305,6 +305,7 @@ int main(){
   // End Free allocated matrices in the host
 
   // End MAGMA context
+  //magma_queue_destroy(queue);
   finalize_magma();
   return 0;
 } // End Main

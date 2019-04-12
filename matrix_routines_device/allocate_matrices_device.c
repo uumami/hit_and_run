@@ -39,16 +39,17 @@ unsigned m, unsigned n, magma_queue_t queue, magma_int_t dev, int trans){
   magma_int_t m_n = n;
 
   magma_int_t err ; // error handler
+  err = magma_dmalloc (&(*d_matrix) , m_m*m_n ); // allocate memory in device
 
-  if(trans != 1){
-    err = magma_dmalloc (&(*d_matrix) , m_m*m_n ); // allocate memory in device
+  if(trans != 1){ // manage device pointer as transposed matrix
     // Remember the matrix are col-major, then we allocate the transpose
     magma_dsetmatrix (m_n, m_m, h_matrix, m_n, *d_matrix, m_n, queue);
-  }else if(trans==1){
+  }else if(trans==1){ // manage device pointer as no transposed matrix
     double * t_h_matrix;
+    // transposed host matrix to allow the device read it as transposed
     t_h_matrix = transpose_host_matrix(h_matrix, m, n);
-    magma_dsetmatrix (m_m, m_n, h_matrix, m_m, *d_matrix, m_m, queue);
-    free(t_h_matrix);
+    magma_dsetmatrix (m_m, m_n, t_h_matrix, m_m, *d_matrix, m_m, queue);
+    magma_free_pinned(t_h_matrix);
   }
   return  0;
 }
