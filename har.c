@@ -153,6 +153,7 @@ int allocate_matrices_host_har(int verbose){
 
 /* ********************* Create Projection Matrix *****************************/
 void projection_matrix(int verbose){
+  magma_int_t err ; // error handler for MAGMA library
   // Allocate AE matrix via pinned MAGMA routine
   H_AE = pin_matrices_host(&H_AE, ME, N);
 
@@ -163,6 +164,12 @@ void projection_matrix(int verbose){
   // Allocate AE in device
   allocate_matrices_device(H_AE, &D_AE, ME, N, queue, dev, 1);
   // Obtain AA'
+  double *D_AAT;
+  err = magma_dmalloc (&D_AAT, ME*ME); // Allocate space for AA' in device
+  matrix_multiplication_device(H_AE, H_AE, &D_AAT, ME, ME, N, N,
+    0, 1, queue); // Get AA'
+    
+  magma_free(D_AAT); // Free provisional matrix
 
 }
 /******************************************************************************/
