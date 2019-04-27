@@ -47,7 +47,7 @@ static unsigned MI;
 double *H_AE;
 double *D_AE;
 // Pointer to Matrix of Inequalities
-double *H_AI;
+double *H_AI;{{1,0,0},{0,1,0},{0,0,1}}
 double *D_AI;
 // Pointer to Vector of Equalities
 double *H_bE;
@@ -55,6 +55,9 @@ double *D_bE;
 // Pointer to Vector of Inequalities
 double *H_bI;
 double *D_bI;
+
+// Pointer to Porjection Matrix
+double *D_PR;
 /* -------------------------------------------------------------------------- */
 
 /* ------------------------ Direction Vector-Matrix ------------------------- */
@@ -152,7 +155,7 @@ int allocate_matrices_host_har(int verbose){
 /******************************************************************************/
 
 /* ********************* Create Projection Matrix *****************************/
-void projection_matrix(int verbose){
+int projection_matrix(int verbose){
   magma_int_t err ; // error handler for MAGMA library
   // Allocate AE matrix via pinned MAGMA routine
 
@@ -235,7 +238,23 @@ void projection_matrix(int verbose){
   }
   magma_free(d_AAT_INV_A); // We dont need this provisional matrix anymore
 
-
+  // Compute I - A'(AA')^-1(A)
+  err = magma_dmalloc (&D_PR, N*N);
+  D_PR = allocate_identity_device(N, queue); // Fill projection Matrix as I
+  alpha = -1.0;
+  beta = 1.0;
+  matrix_multiplication_device(d_AT_AAT_INV_A, D_PR, &D_PR,
+  N, N, N, N, 0, 0, alpha, beta, queue);
+  if(verbose > 2){
+    double * h_PR;
+    h_PR = malloc(N*N*sizeof(double));
+    magma_dgetmatrix(N, N, D_PR, N, h_PR, N, queue);
+    printf("\n Matrix I - A'(AA')^-1(A) \n" );
+    print_matrix_debug_transpose(h_PR, N, N);
+    free(h_PR);
+  }
+  magma_free(d_AT_AAT_INV_A);
+  return 0;
 }
 /******************************************************************************/
 
@@ -263,7 +282,6 @@ double * interior_point(double * x_0,int verbose){
 }// end of interior
 /******************************************************************************/
 
-
 /************************ generate_direction_vector ***************************/
 void generate_direction_vector(unsigned vector_size, int verbose){
   for(int i = 0; i < vector_size; i++){
@@ -286,13 +304,14 @@ int free_host_matrices_har(){
 }// End free_host_matrices_har
 /******************************************************************************/
 
-/************************ free allocated device matrices *********************  */
+/************************ free allocated device matrices ******************** */
 int free_device_matrices_har(){
   magma_free (D_AE);
+  magma_free (D_PR);
+
   return 0;
 }// End free_device_matrices_har
 /******************************************************************************/
-
 
 /* ******************************* Main ************************************* */
 int main(){
@@ -385,3 +404,4 @@ int main(){
   finalize_magma();
   return 0;
 } // End Main
+/******************************************************************************/
