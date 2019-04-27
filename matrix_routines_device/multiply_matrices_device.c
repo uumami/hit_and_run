@@ -48,8 +48,7 @@ void matrix_multiplication_device(double *d_a, double *d_b, double **d_c,
   }
 }
 
-double * calculate_inverse_qr(double *d_a, unsigned m, magma_queue_t queue ){
-  // Create Identity Matrix for the inverse
+double * allocate_identity_device(unsigned m,  magma_queue_t queue ){
   double *h_i, *d_i;
   h_i = (double *) malloc(m*m*sizeof(double)); // Allocate I in host
   magma_dmalloc (&(d_i) , m*m ); // Allocate I in device
@@ -66,12 +65,18 @@ double * calculate_inverse_qr(double *d_a, unsigned m, magma_queue_t queue ){
   }
   // Copy Identity Matrix to the device
   magma_dsetmatrix (m, m, h_i, m, d_i, m, queue);
+  free(h_i); /// Free provisional identity matrix in the host
+  return d_i;
+}
 
+double * calculate_inverse_qr(double *d_a, unsigned m, magma_queue_t queue ){
+  // Create Identity Matrix for the inverse
+  double *d_i;
+  d_i = allocate_identity_device(m, queue);
   // Find the inverse
   magma_int_t iter ;
   magma_int_t info ;
   magma_dsgeqrsv_gpu( m, m, m, d_a, m, d_i, m, d_i, m, &iter, &info );
 
-  free(h_i); /// Free provisional identity matrix in the host
   return d_i;
 }

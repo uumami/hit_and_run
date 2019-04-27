@@ -163,18 +163,31 @@ void projection_matrix(int verbose){
   }
   // Allocate AE in device
   allocate_matrices_device(H_AE, &D_AE, ME, N, queue, dev, 1);
+
   // Obtain AA'
   double *d_AAT; // AA' device pointer
   err = magma_dmalloc (&d_AAT, ME*ME); // Allocate space for AA' in device
   matrix_multiplication_device(H_AE, H_AE, &d_AAT, ME, ME, N, N,
     0, 1, queue); // Compute AA'
 
+  // Obtain (AA')^⁻1
   double *d_AAT_INV; // (AA')-1 device pointer
   d_AAT_INV = calculate_inverse_qr(d_AAT, ME, queue);
-  magma_free(d_AAT);
+  magma_free(d_AAT); // We dont need this provisional matrix anymore
 
-  // Free provisional matrix
-  magma_free(d_AAT_INV);
+  // Obtain (AA')^⁻1(A)
+  double * d_AAT_INV_A;
+  err = magma_dmalloc (&d_AAT_INV_A, ME*N); // Allo_dev (AAT)⁻1(A)
+  matrix_multiplication_device(d_AAT_INV, D_AE, &d_AAT_INV_A, ME, ME, N, ME,
+  0, 0, queue);
+  magma_free(d_AAT_INV); // We dont need this provisional matrix anymore
+
+  // Obtain A'(AA')^-1(A)
+  double * d_AT_AAT_INV_A;
+  err = magma_dmalloc (&d_AT_AAT_INV_A, N*N); // Allo_dev (AAT)⁻1(A)
+  matrix_multiplication_device(D_AE, d_AAT_INV_A, &d_AT_AAT_INV_A,
+  ME, ME, N, N, 1, 0, queue);
+  magma_free(d_AAT_INV_A); // We dont need this provisional matrix anymore
 
 }
 /******************************************************************************/
