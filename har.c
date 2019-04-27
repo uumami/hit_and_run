@@ -155,11 +155,18 @@ int allocate_matrices_host_har(int verbose){
 void projection_matrix(int verbose){
   magma_int_t err ; // error handler for MAGMA library
   // Allocate AE matrix via pinned MAGMA routine
+
+  // Constants for multiplications
+  double alpha = 1.0;
+  double beta = 0.0;
+
+  // Pin A matrix in host using MAGMA routine
   H_AE = pin_matrices_host(&H_AE, ME, N);
   if(verbose > 2){
     printf("\n Matrix Equality allocated via MAGMA pinned routine \n" );
     print_matrix_debug(H_AE, ME, N);
   }
+
   // Allocate AE in device
   allocate_matrices_device(H_AE, &D_AE, ME, N, queue, dev, 1);
   if(verbose > 2){
@@ -170,11 +177,12 @@ void projection_matrix(int verbose){
     print_matrix_debug(h_ae, ME, N);
     free(h_ae);
   }
+
   // Obtain AA'
   double *d_AAT; // AA' device pointer
   err = magma_dmalloc (&d_AAT, ME*ME); // Allocate space for AA' in device
   matrix_multiplication_device(H_AE, H_AE, &d_AAT, ME, ME, N, N,
-    0, 1, queue); // Compute AA'
+    0, 1, alpha, beta, queue); // Compute AA'
   if(verbose > 2){
     double *h_AAT;
     h_AAT = malloc(ME*ME*sizeof(double));
@@ -201,7 +209,7 @@ void projection_matrix(int verbose){
   double * d_AAT_INV_A;
   err = magma_dmalloc (&d_AAT_INV_A, ME*N); // Allo_dev (AAT)⁻1(A)
   matrix_multiplication_device(d_AAT_INV, D_AE, &d_AAT_INV_A, ME, ME, N, ME,
-  0, 0, queue);
+  0, 0, alpha, beta, queue);
   if(verbose > 2){
     double *h_AAT_INV_A;
     h_AAT_INV_A= malloc(ME*N*sizeof(double));
@@ -216,7 +224,7 @@ void projection_matrix(int verbose){
   double * d_AT_AAT_INV_A;
   err = magma_dmalloc (&d_AT_AAT_INV_A, N*N); // Allo_dev (AAT)⁻1(A)
   matrix_multiplication_device(D_AE, d_AAT_INV_A, &d_AT_AAT_INV_A,
-  ME, ME, N, N, 1, 0, queue);
+  ME, ME, N, N, 1, 0, alpha, beta, queue);
   if(verbose > 2){
     double * h_AT_AAT_INV_A;
     h_AT_AAT_INV_A = malloc(N*N*sizeof(double));

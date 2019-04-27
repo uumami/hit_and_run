@@ -11,23 +11,21 @@
 
 void matrix_multiplication_device(double *d_a, double *d_b, double **d_c,
   unsigned row_a, unsigned row_b, unsigned col_b, unsigned col_a, int trans_a,
-  int trans_b, magma_queue_t queue){
+  int trans_b, double al, double bet, magma_queue_t queue){
   // In put the matrix dimensions as they live in the device not the dim after
   // applying op(Matrix)
   // a->m*k_a(lda m), b->k*n (ldb k)
   // Magma dimension types (it takes into account the matrices are stored in
   // column major fashion or transposed)
   magma_int_t m = row_a;
-  magma_int_t k = row_b; // number fo columns of A
+  magma_int_t k = row_b;
   magma_int_t n  = col_b;
   magma_int_t k_a  = col_a;
-
   magma_int_t err ; // error handler
 
-
   // Create constants
-  double alpha = MAGMA_S_MAKE ( 1.0 , 0.0 );
-  double beta = MAGMA_S_MAKE ( 0.0 , 0.0 );
+  double alpha = MAGMA_S_MAKE ( al , 0.0 );
+  double beta = MAGMA_S_MAKE ( bet , 0.0 );
 
   if(trans_a == 0 && trans_b==0){ // a->m*k_a, b->k*n, c->m*n
     //err = magma_dmalloc (d_c, m*n);
@@ -47,6 +45,7 @@ void matrix_multiplication_device(double *d_a, double *d_b, double **d_c,
       beta, *d_c, m, queue);
   }
 }
+
 
 double * allocate_identity_device(unsigned m,  magma_queue_t queue ){
   double *h_i, *d_i;
