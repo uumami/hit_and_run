@@ -180,7 +180,7 @@ void projection_matrix(int verbose){
     h_AAT = malloc(ME*ME*sizeof(double));
     magma_dgetmatrix(ME, ME, d_AAT, ME, h_AAT, ME, queue);
     printf("\n Matrix AA' \n" );
-    print_matrix_debug(h_AAT, ME, ME);
+    print_matrix_debug_transpose(h_AAT, ME, ME);
     free(h_AAT);
   }
 
@@ -192,7 +192,7 @@ void projection_matrix(int verbose){
     h_AAT_INV = malloc(ME*ME*sizeof(double));
     magma_dgetmatrix(ME, ME, d_AAT_INV, ME, h_AAT_INV, ME, queue);
     printf("\n (AA')^-1 \n" );
-    print_matrix_debug(h_AAT_INV, ME, ME);
+    print_matrix_debug_transpose(h_AAT_INV, ME, ME);
     free(h_AAT_INV);
   }
   magma_free(d_AAT); // We dont need this provisional matrix anymore
@@ -207,7 +207,7 @@ void projection_matrix(int verbose){
     h_AAT_INV_A= malloc(ME*N*sizeof(double));
     magma_dgetmatrix(ME, N, d_AAT_INV_A, ME, h_AAT_INV_A, ME, queue);
     printf("\n Matrix (AA')^-1A \n" );
-    print_matrix_debug(h_AAT_INV_A, ME, N);
+    print_matrix_debug_transpose(h_AAT_INV_A, ME, N);
     free(h_AAT_INV_A);
   }
   magma_free(d_AAT_INV); // We dont need this provisional matrix anymore
@@ -222,7 +222,7 @@ void projection_matrix(int verbose){
     h_AT_AAT_INV_A = malloc(N*N*sizeof(double));
     magma_dgetmatrix(N, N, d_AT_AAT_INV_A, N, h_AT_AAT_INV_A, N, queue);
     printf("\n Matrix A'(AA')^-1(A) \n" );
-    print_matrix_debug(h_AT_AAT_INV_A, N, N);
+    print_matrix_debug_transpose(h_AT_AAT_INV_A, N, N);
     free(h_AT_AAT_INV_A);
   }
   magma_free(d_AAT_INV_A); // We dont need this provisional matrix anymore
@@ -241,6 +241,10 @@ double * interior_point(double * x_0,int verbose){
   for(int n = 0; n<N; n++){
     x_0[n] = (double) 1.0/(double)N;
   }
+
+  x_0[0] = .25;
+  x_0[1] = .25;
+  x_0[2] = .5;
 
   if (verbose >= 3){
     printf("\nInterior Point\n");

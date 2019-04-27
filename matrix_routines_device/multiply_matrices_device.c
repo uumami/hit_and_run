@@ -73,7 +73,7 @@ double * calculate_inverse_qr(double *d_a, unsigned m, magma_queue_t queue ){
   // Create Identity Matrix for the inverse
   double *d_i;
   d_i = allocate_identity_device(m, queue);
-  if(1){
+  if(0){
     double *h_i;
     h_i = malloc(m*m*sizeof(double));
     magma_dgetmatrix(m, m, d_i, m, h_i, m, queue);
@@ -81,7 +81,7 @@ double * calculate_inverse_qr(double *d_a, unsigned m, magma_queue_t queue ){
     print_matrix_debug(h_i, m, m);
     free(h_i);
   }
-  if(1){
+  if(0){
     double *h_a;
     h_a = malloc(m*m*sizeof(double));
     magma_dgetmatrix(m, m, d_a, m, h_a, m, queue);
@@ -96,7 +96,7 @@ double * calculate_inverse_qr(double *d_a, unsigned m, magma_queue_t queue ){
   double * d_out;
   magma_dmalloc (&(d_out) , m*m ); // Allocate I in device
   magma_dsgeqrsv_gpu( m_, m_, m_, d_a, m_, d_i, m_, d_out, m_, &iter, &info );
-  if(1){
+  if(0){
     printf("\n dsgeqrsv status: %d \n", (int) info );
     double *h_i;
     h_i = malloc(m*m*sizeof(double));

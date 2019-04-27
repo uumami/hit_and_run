@@ -24,7 +24,7 @@ double * transpose_host_matrix(double *h_matrix, unsigned m, unsigned n){
   for( int j=0; j < n; j++)
   {
     for(int i = 0; i < m; i++){
-      pinned_matrix[l] = h_matrix[i*m + j];
+      pinned_matrix[l] = h_matrix[i*n + j];
       l++;
     }
   }

@@ -39,3 +39,17 @@ int print_matrix_debug(double *P, unsigned n, unsigned m){
   return 0;
 
 }
+
+int print_matrix_debug_transpose(double *P, unsigned n, unsigned m){
+  // Recall (n,m) -> (rows,columns)
+  // Print for
+  for(int i = 0; i < n; i++){ // For over the rows
+    for(int j = 0; j < m; j++){ // For over the columns
+      printf("%lf ", P[j*n + i]);
+    }
+    printf("\n");
+  }
+
+  return 0;
+
+}
