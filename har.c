@@ -319,6 +319,8 @@ int create_B_matrix(int verbose){
 /* ************************** Pin D Matrix ********************************** */
 int pin_D_matrix(int verbose){
   magma_int_t err ; // error handler
+
+  // Fill initial D matrix with iid observations
   err = magma_dmalloc_pinned(&H_D, N*Z);
   for( int i = 0; i < N*Z; i++){
     H_D[i] = box_muller();
@@ -341,6 +343,8 @@ int pin_D_matrix(int verbose){
 int pin_X_matrix(int verbose){
   magma_int_t err ; // error handler
   err = magma_dmalloc_pinned(&H_X, N*Z);
+
+  // Fill X matrix with the initial vector in each column Z times
   for( int i = 0; i < Z; i++){
     for(int j = 0; j < N; j++){
       H_X[i*N + j] = x_0[j];
