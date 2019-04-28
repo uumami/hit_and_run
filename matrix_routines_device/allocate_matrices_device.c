@@ -71,3 +71,16 @@ double * pin_matrices_host(double **h_matrix, unsigned m, unsigned n){
   free(*h_matrix);
   return  pinned_matrix;
 }
+
+void print_matrices_in_routine(int m, int n, double * d_p, int transpose,
+  magma_queue_t queue){
+  double * h_p;
+  h_p= malloc(m*n*sizeof(double));
+  magma_dgetmatrix(m, n, d_p, m, h_p, m, queue);
+  if (transpose){
+    print_matrix_debug_transpose(h_p, m, n);
+  }else{
+    print_matrix_debug(h_p, m, n);
+  }
+  free(h_p);
+}
