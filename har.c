@@ -32,6 +32,8 @@ static unsigned ME;
 static unsigned MI;
 // Padding for X
 static unsigned Z;
+// Iterations
+static unsigned Iter;
 /* -------------------------------------------------------------------------- */
 
 /* -------------------------- Restriction files ----------------------------- */
@@ -62,8 +64,9 @@ double *D_bI;
 double *D_PR;
 
 // Pointer to B matrix N columns, each column is the vector BI
-double *H_B;
-double *D_B;
+double *H_BI;
+double *D_B; //  Will be copied to D_BS at the beggining of each loop since
+            // MAGMA routines store matrices in the operation matrix C
 
 // Pointer to D, each column is a direction of size n, square (best choice)
 double *H_D;
@@ -72,6 +75,23 @@ double *D_D;
 // Pointer to X, each column is a diferent walk
 double *H_X;
 double *D_X;
+
+// Pointer to B_slack:= B - AI*X. No need to have AI*X (can be on the run)
+double *H_BS;
+double *D_BS; // Will be B at the beegining of each iteration, then it will cont
+              // ain  B - AI*X
+
+// Pointer to AID
+double *H_AI_D; // To check negativity conditions
+double *D_AI_D; // To multiply in device
+
+// Pointer to LAMBDA = (B - AI*X)/(AI*D)
+double *H_LAM;
+double *D_LAM;
+
+// Pointer to Gamma. Which mask negative and positive coefficients of LAMBDA
+int *H_GAMMA;
+
 /* -------------------------------------------------------------------------- */
 
 /* ------------------------ Direction Vector-Matrix ------------------------- */
@@ -117,7 +137,6 @@ int allocate_matrices_host_har(int verbose){
   b_eq    = fopen(bE_TXT, "r");
   H_bE = allocate_matrices_host(b_eq, ME);
   fclose(b_eq);
-
   // Parse Inequality vector for rows
   FILE *b_in    = fopen(bI_TXT, "r");
   MI = count_rows(b_in);
@@ -291,25 +310,26 @@ int projection_matrix(int verbose){
 
 /* ************************* Create B Matrix ******************************** */
 int create_B_matrix(int verbose){
+  // Transposed in host, transposed in device->No transposed for routines
   magma_int_t err ; // error handler
-  err = magma_dmalloc_pinned(&H_B, MI*Z);
-  for( int i = 0; i < MI; i++){
-    for(int j = 0; j < Z; j++){
-      H_B[i*Z + j] = H_bI[i];
+  err = magma_dmalloc_pinned(&H_BI, MI*Z);
+  for( int i = 0; i < Z; i++){
+    for(int j = 0; j < MI; j++){
+      H_BI[i*MI + j] = H_bI[j]; // No transposed in host
     }
   }
   if(verbose > 2){
-    printf("\n B \n" );
-    print_matrix_debug(H_B, MI, Z);
+    printf("\n B Transposed in Host \n" );
+    print_matrix_debug(H_BI, Z, MI);
   }
-  allocate_matrices_device(H_B, &D_B, MI, Z, queue, dev, 1);
+  allocate_matrices_device(H_BI, &D_B, MI, Z, queue, dev, 0);
   if(verbose > 2){
-    double * h_b;
-    h_b = malloc(MI*Z*sizeof(double));
-    magma_dgetmatrix(MI, Z, D_B, MI, h_b, MI, queue);
-    printf("\n B in device \n" );
-    print_matrix_debug_transpose(h_b, MI, Z);
-    free(h_b);
+    double * h_bi;
+    h_bi = malloc(MI*Z*sizeof(double));
+    magma_dgetmatrix(MI, Z, D_B, MI, h_bi, MI, queue);
+    printf("\n B in Routine \n" );
+    print_matrix_debug_transpose(h_bi, MI, Z);
+    free(h_bi);
   }
   return 0;
 }
@@ -319,7 +339,7 @@ int create_B_matrix(int verbose){
 /* ************************** Pin D Matrix ********************************** */
 int pin_D_matrix(int verbose){
   magma_int_t err ; // error handler
-
+  // Since they are iidd it does not mater if it si transposed or not
   // Fill initial D matrix with iid observations
   err = magma_dmalloc_pinned(&H_D, N*Z);
   for( int i = 0; i < N*Z; i++){
@@ -330,7 +350,7 @@ int pin_D_matrix(int verbose){
     double * h_d;
     h_d = malloc(N*Z*sizeof(double));
     magma_dgetmatrix(N, Z, D_D, N, h_d, N, queue);
-    printf("\n D in device \n" );
+    printf("\n D in Routine \n" );
     print_matrix_debug_transpose(h_d, N, Z);
     free(h_d);
   }
@@ -339,23 +359,27 @@ int pin_D_matrix(int verbose){
 /******************************************************************************/
 
 
-/* ************************** Pin x Matrix ********************************** */
+/* ************************** Pin X Matrix ********************************** */
 int pin_X_matrix(int verbose){
+  // Transposed in host, transposed in device->No transposed for routines
   magma_int_t err ; // error handler
   err = magma_dmalloc_pinned(&H_X, N*Z);
-
   // Fill X matrix with the initial vector in each column Z times
   for( int i = 0; i < Z; i++){
     for(int j = 0; j < N; j++){
       H_X[i*N + j] = x_0[j];
     }
   }
+  if(verbose > 2){
+    printf("\n X transposed in host \n" );
+    print_matrix_debug(H_X, Z, N);
+  }
   allocate_matrices_device(H_X, &D_X, N, Z, queue, dev, 0);
   if(verbose > 2){
     double * h_x;
     h_x = malloc(N*Z*sizeof(double));
     magma_dgetmatrix(N, Z, D_X, N, h_x, N, queue);
-    printf("\n X in device \n" );
+    printf("\n X in routine \n" );
     print_matrix_debug_transpose(h_x, N, Z);
     free(h_x);
   }
@@ -363,6 +387,21 @@ int pin_X_matrix(int verbose){
 }
 /******************************************************************************/
 
+/* ************************** Pin AI Matrix ********************************* */
+int init_device_AI_matrix(int verbose){
+  // Transposed in host, transposed in device->No transposed for routines
+  allocate_matrices_device(H_AI, &D_AI, MI, N, queue, dev, 1);
+  if(verbose > 2){
+    double * h_ai;
+    h_ai = malloc(N*MI*sizeof(double));
+    magma_dgetmatrix(MI, N, D_AI, MI, h_ai, MI, queue);
+    printf("\n AI in routine \n" );
+    print_matrix_debug_transpose(h_ai, MI, N);
+    free(h_ai);
+  }
+  return 0;
+}
+/******************************************************************************/
 
 /* *************************** interior_point ******************************* */
 double * interior_point(double * x_0,int verbose){
@@ -389,10 +428,20 @@ double * interior_point(double * x_0,int verbose){
 /******************************************************************************/
 
 
+/* ******************************* har ************************************** */
+void har(){
+  /* Assumes the matrices have been already been pinned and allocated*/
+  for( int t=0; t < Iter; t++){
+
+  }
+}
+/******************************************************************************/
+
+
 /* ********************** free allocated host matrices *********************  */
 int free_host_matrices_har(){
   magma_free_pinned(H_AE);
-  magma_free_pinned(H_B);
+  magma_free_pinned(H_BI);
   magma_free_pinned(H_D);
   magma_free_pinned(H_X);
 
@@ -407,6 +456,7 @@ int free_host_matrices_har(){
 /************************ free allocated device matrices ******************** */
 int free_device_matrices_har(){
   magma_free (D_AE);
+  magma_free (D_AI);
   magma_free (D_PR);
   magma_free (D_B);
   magma_free (D_D);
@@ -430,6 +480,8 @@ int main(){
   clock_t begin;
   clock_t end ;
 
+  // Iterations
+  Iter = 5;
   // Allocate matrices in host
   begin = clock();
   allocate_matrices_host_har(verbose);
@@ -475,7 +527,7 @@ int main(){
   } // End calculate projection Matrix
 
   // Initialize padding
-  Z = N;
+  Z = N+1;
 
   // Create BI matrix
   begin = clock();
@@ -506,6 +558,16 @@ int main(){
     printf("\n ---- Init and Pin X Host & Device: %lf\n", time_spent);
   }
   // End Initialize X
+
+  // Initialize AI
+  begin = clock();
+  init_device_AI_matrix(verbose);
+  end = clock();
+  time_spent = (double)(end - begin) / CLOCKS_PER_SEC;
+  if (verbose > 0){
+    printf("\n ---- Init Pin AI Device: %lf\n", time_spent);
+  }
+  // End Initialize AI
 
   // Free allocated matrices in the host
   begin = clock();
