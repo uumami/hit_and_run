@@ -30,6 +30,8 @@ static unsigned N;
 static unsigned ME;
 // Number of Inequalities
 static unsigned MI;
+// Padding for X
+static unsigned Z;
 /* -------------------------------------------------------------------------- */
 
 /* -------------------------- Restriction files ----------------------------- */
@@ -47,7 +49,7 @@ static unsigned MI;
 double *H_AE;
 double *D_AE;
 // Pointer to Matrix of Inequalities
-double *H_AI;{{1,0,0},{0,1,0},{0,0,1}}
+double *H_AI;
 double *D_AI;
 // Pointer to Vector of Equalities
 double *H_bE;
@@ -58,6 +60,9 @@ double *D_bI;
 
 // Pointer to Porjection Matrix
 double *D_PR;
+// Pointer to B matrix N columns, each column is the vector BI
+double *H_B;
+double *D_B;
 /* -------------------------------------------------------------------------- */
 
 /* ------------------------ Direction Vector-Matrix ------------------------- */
@@ -258,6 +263,31 @@ int projection_matrix(int verbose){
 }
 /******************************************************************************/
 
+int create_B_matrix(int verbose)
+{
+  Z = N;
+  magma_int_t err ; // error handler
+  err = magma_dmalloc_pinned(&H_B, MI*Z);
+  for( int i = 0; i < MI; i++){
+    for(int j = 0; j < Z; j++){
+      H_B[i*Z + j] = H_bI[i];
+    }
+  }
+  if(verbose > 2){
+    printf("\n B \n" );
+    print_matrix_debug(H_B, MI, Z);
+  }
+  allocate_matrices_device(H_B, &D_B, MI, Z, queue, dev, 1);
+  if(verbose > 2){
+    double * h_b;
+    h_b = malloc(MI*Z*sizeof(double));
+    magma_dgetmatrix(MI, Z, D_B, MI, h_b, MI, queue);
+    printf("\n B in device \n" );
+    print_matrix_debug_transpose(h_b, MI, Z);
+    free(h_b);
+  }
+  return 0;
+}
 /***************************** interior_point *********************************/
 double * interior_point(double * x_0,int verbose){
   // Find center of the polytope using lpsolver
@@ -297,6 +327,8 @@ void generate_direction_vector(unsigned vector_size, int verbose){
 int free_host_matrices_har(){
   //free(H_AE);
   magma_free_pinned(H_AE);
+  magma_free_pinned(H_B);
+
   free(H_AI);
   free(H_bE);
   free(H_bI);
@@ -308,7 +340,7 @@ int free_host_matrices_har(){
 int free_device_matrices_har(){
   magma_free (D_AE);
   magma_free (D_PR);
-
+  magma_free (D_B);
   return 0;
 }// End free_device_matrices_har
 /******************************************************************************/
@@ -379,6 +411,16 @@ int main(){
     printf("\n ---- Projection Matrix: %lf\n", time_spent);
   } // End calculate projection Matrix
 
+  // Create BI matrix
+  begin = clock();
+  create_B_matrix(verbose);
+  end = clock();
+  time_spent = (double)(end - begin) / CLOCKS_PER_SEC;
+  if (verbose > 0){
+    printf("\n ---- Create B: %lf\n", time_spent);
+  }
+
+  // End create BI matrix
   // Free allocated matrices in the host
   begin = clock();
   free_host_matrices_har();

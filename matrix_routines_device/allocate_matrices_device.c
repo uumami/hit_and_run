@@ -10,7 +10,7 @@
 /* ------------------------------ Header ------------------------------------ */
 #include "allocate_matrices_device.h"
 
-double * transpose_host_matrix(double *h_matrix, unsigned m, unsigned n){
+double * pinned_transpose_host_matrix(double *h_matrix, unsigned m, unsigned n){
   // Recall: m->row, n->column
   magma_int_t m_m =  m;
   magma_int_t m_n =  n;
@@ -47,7 +47,7 @@ unsigned m, unsigned n, magma_queue_t queue, magma_int_t dev, int trans){
   }else if(trans==1){ // manage device pointer as no transposed matrix
     double * t_h_matrix;
     // transposed host matrix to allow the device read it as transposed
-    t_h_matrix = transpose_host_matrix(h_matrix, m, n);
+    t_h_matrix = pinned_transpose_host_matrix(h_matrix, m, n);
     magma_dsetmatrix (m_m, m_n, t_h_matrix, m_m, *d_matrix, m_m, queue);
     magma_free_pinned(t_h_matrix);
   }
