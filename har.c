@@ -60,9 +60,18 @@ double *D_bI;
 
 // Pointer to Porjection Matrix
 double *D_PR;
+
 // Pointer to B matrix N columns, each column is the vector BI
 double *H_B;
 double *D_B;
+
+// Pointer to D, each column is a direction of size n, square (best choice)
+double *H_D;
+double *D_D;
+
+// Pointer to X, each column is a diferent walk
+double *H_X;
+double *D_X;
 /* -------------------------------------------------------------------------- */
 
 /* ------------------------ Direction Vector-Matrix ------------------------- */
@@ -75,7 +84,8 @@ double * x_0;
 // Global queue for magma
 magma_queue_t queue;// cudaMalloc status
 magma_int_t dev;// CUBLAS functions status
-/* ------------------------------------------------------------------------- */
+/* -------------------------------------------------------------------------- */
+
 
 /* *************************** init_magma *********************************** */
 void init_magma(){
@@ -86,12 +96,14 @@ void init_magma(){
 }
 /******************************************************************************/
 
+
 /* *************************** finalize_magma ******************************* */
 void finalize_magma(){
   magma_queue_destroy(queue); // destroy queue
   magma_finalize (); // finalize Magma
 }
 /******************************************************************************/
+
 
 /* ******************** allocate_matrices_host_routine *********************  */
 int allocate_matrices_host_har(int verbose){
@@ -159,7 +171,20 @@ int allocate_matrices_host_har(int verbose){
 } // end allocate_matrices_host_har
 /******************************************************************************/
 
-/* ********************* Create Projection Matrix *****************************/
+
+/* ********************** generate_direction_vector ************************* */
+void generate_direction_vector(unsigned vector_size, int verbose){
+  for(int i = 0; i < vector_size; i++){
+    normal_direction[i] = box_muller();
+  }
+  if (verbose > 2){
+    print_matrix_debug(normal_direction, vector_size, 1);
+  }
+}
+/******************************************************************************/
+
+
+/* ********************* Create Projection Matrix *************************** */
 int projection_matrix(int verbose){
   magma_int_t err ; // error handler for MAGMA library
   // Allocate AE matrix via pinned MAGMA routine
@@ -263,9 +288,9 @@ int projection_matrix(int verbose){
 }
 /******************************************************************************/
 
-int create_B_matrix(int verbose)
-{
-  Z = N;
+
+/* ************************* Create B Matrix ******************************** */
+int create_B_matrix(int verbose){
   magma_int_t err ; // error handler
   err = magma_dmalloc_pinned(&H_B, MI*Z);
   for( int i = 0; i < MI; i++){
@@ -288,7 +313,54 @@ int create_B_matrix(int verbose)
   }
   return 0;
 }
-/***************************** interior_point *********************************/
+/******************************************************************************/
+
+
+/* ************************** Pin D Matrix ********************************** */
+int pin_D_matrix(int verbose){
+  magma_int_t err ; // error handler
+  err = magma_dmalloc_pinned(&H_D, N*Z);
+  for( int i = 0; i < N*Z; i++){
+    H_D[i] = box_muller();
+  }
+  allocate_matrices_device(H_D, &D_D, N, Z, queue, dev, 0);
+  if(verbose > 2){
+    double * h_d;
+    h_d = malloc(N*Z*sizeof(double));
+    magma_dgetmatrix(N, Z, D_D, N, h_d, N, queue);
+    printf("\n D in device \n" );
+    print_matrix_debug_transpose(h_d, N, Z);
+    free(h_d);
+  }
+  return 0;
+}
+/******************************************************************************/
+
+
+/* ************************** Pin x Matrix ********************************** */
+int pin_X_matrix(int verbose){
+  magma_int_t err ; // error handler
+  err = magma_dmalloc_pinned(&H_X, N*Z);
+  for( int i = 0; i < Z; i++){
+    for(int j = 0; j < N; j++){
+      H_X[i*N + j] = x_0[j];
+    }
+  }
+  allocate_matrices_device(H_X, &D_X, N, Z, queue, dev, 0);
+  if(verbose > 2){
+    double * h_x;
+    h_x = malloc(N*Z*sizeof(double));
+    magma_dgetmatrix(N, Z, D_X, N, h_x, N, queue);
+    printf("\n X in device \n" );
+    print_matrix_debug_transpose(h_x, N, Z);
+    free(h_x);
+  }
+  return 0;
+}
+/******************************************************************************/
+
+
+/* *************************** interior_point ******************************* */
 double * interior_point(double * x_0,int verbose){
   // Find center of the polytope using lpsolver
   x_0 = (double *)malloc(N*sizeof(double));
@@ -312,22 +384,12 @@ double * interior_point(double * x_0,int verbose){
 }// end of interior
 /******************************************************************************/
 
-/************************ generate_direction_vector ***************************/
-void generate_direction_vector(unsigned vector_size, int verbose){
-  for(int i = 0; i < vector_size; i++){
-    normal_direction[i] = box_muller();
-  }
-  if (verbose > 2){
-    print_matrix_debug(normal_direction, vector_size, 1);
-  }
-}
-/******************************************************************************/
 
-/************************ free allocated host matrices *********************  */
+/* ********************** free allocated host matrices *********************  */
 int free_host_matrices_har(){
-  //free(H_AE);
   magma_free_pinned(H_AE);
   magma_free_pinned(H_B);
+  magma_free_pinned(H_D);
 
   free(H_AI);
   free(H_bE);
@@ -336,14 +398,17 @@ int free_host_matrices_har(){
 }// End free_host_matrices_har
 /******************************************************************************/
 
+
 /************************ free allocated device matrices ******************** */
 int free_device_matrices_har(){
   magma_free (D_AE);
   magma_free (D_PR);
   magma_free (D_B);
+  magma_free (D_D);
   return 0;
 }// End free_device_matrices_har
 /******************************************************************************/
+
 
 /* ******************************* Main ************************************* */
 int main(){
@@ -389,15 +454,6 @@ int main(){
   }
   // End init random seed
 
-  normal_direction = (double *)malloc(sizeof(double)*N);
-  begin = clock();
-  generate_direction_vector(N, verbose);
-  end = clock();
-  time_spent = (double)(end - begin) / CLOCKS_PER_SEC;
-  if (verbose > 0){
-    printf("\n ----Generate Normal Direction: %lf\n", time_spent);
-  }
-
   // Create MAGMA Context
   init_magma();
 
@@ -411,6 +467,9 @@ int main(){
     printf("\n ---- Projection Matrix: %lf\n", time_spent);
   } // End calculate projection Matrix
 
+  // Initialize padding
+  Z = N;
+
   // Create BI matrix
   begin = clock();
   create_B_matrix(verbose);
@@ -419,8 +478,28 @@ int main(){
   if (verbose > 0){
     printf("\n ---- Create B: %lf\n", time_spent);
   }
-
   // End create BI matrix
+
+  // Initialize D
+  begin = clock();
+  pin_D_matrix(verbose);
+  end = clock();
+  time_spent = (double)(end - begin) / CLOCKS_PER_SEC;
+  if (verbose > 0){
+    printf("\n ---- Init and Pin D Host & Device: %lf\n", time_spent);
+  }
+  // End Initialize D
+
+  // Initialize X
+  begin = clock();
+  pin_X_matrix(verbose);
+  end = clock();
+  time_spent = (double)(end - begin) / CLOCKS_PER_SEC;
+  if (verbose > 0){
+    printf("\n ---- Init and Pin X Host & Device: %lf\n", time_spent);
+  }
+  // End Initialize X
+
   // Free allocated matrices in the host
   begin = clock();
   free_host_matrices_har();
