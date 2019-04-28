@@ -390,6 +390,7 @@ int free_host_matrices_har(){
   magma_free_pinned(H_AE);
   magma_free_pinned(H_B);
   magma_free_pinned(H_D);
+  magma_free_pinned(H_X);
 
   free(H_AI);
   free(H_bE);
@@ -405,6 +406,8 @@ int free_device_matrices_har(){
   magma_free (D_PR);
   magma_free (D_B);
   magma_free (D_D);
+  magma_free (D_X);
+
   return 0;
 }// End free_device_matrices_har
 /******************************************************************************/
