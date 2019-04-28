@@ -418,12 +418,11 @@ double * interior_point(double * x_0,int verbose){
 
 
 /* ******************************* har ************************************** */
-void har(){
+void har(int verbose){
   /* Assumes the matrices have been already been pinned and allocated*/
-  for( int t=0; t < Iter; t++){
-    //matrix_multiplication_device(D_AI, D_D, double **d_c,
-    //  unsigned row_a, unsigned row_b, unsigned col_b, unsigned col_a, int trans_a,
-      //int trans_b, double al, double bet, magma_queue_t queue)
+  for( int t=0; t < 1; t++){
+    matrix_multiplication_device(D_AI, D_D, &D_AI_D,
+    MI, N, Z, N, 0, 0, 1.0, 0.0, queue);
   }
 }
 /******************************************************************************/
@@ -571,6 +570,18 @@ int main(){
     printf("\n ---- Init Pin AI_D: %lf\n", time_spent);
   }
   // End Initialize AI_D
+
+
+  // HAR
+  begin = clock();
+  har(verbose);
+  end = clock();
+  time_spent = (double)(end - begin) / CLOCKS_PER_SEC;
+  if (verbose > 0){
+    printf("\n ---- HAR: %lf\n", time_spent);
+  }
+  // HAR
+
 
   // Free allocated matrices in the host
   begin = clock();
