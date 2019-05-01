@@ -223,7 +223,7 @@ int projection_matrix(int verbose){
   allocate_matrices_device(H_AE, &D_AE, ME, N, queue, dev, 1);
   if(verbose > 2){
     printf("\n AE in Routine \n" );
-    print_matrices_in_routine(ME, N, D_AE, 0,queue);
+    print_matrices_in_routine(ME, N, D_AE, 1,queue);
   }
 
   // Obtain AA'
@@ -233,7 +233,7 @@ int projection_matrix(int verbose){
     0, 1, alpha, beta, queue); // Compute AA'
   if(verbose > 2){
     printf("\n  AA' in routine \n" );
-    print_matrices_in_routine(ME, ME, d_AAT, 1,queue);
+    print_matrices_in_routine(ME*ME , 1, d_AAT, 1,queue);
 
   }
 
@@ -271,6 +271,10 @@ int projection_matrix(int verbose){
   // Compute I - A'(AA')^-1(A)
   err = magma_dmalloc (&D_PR, N*N);
   D_PR = allocate_identity_device(N, queue); // Fill projection Matrix as I
+  if(verbose > 2){
+    printf("\n I in routine \n" );
+    print_matrices_in_routine(N, N,  D_PR, 1,queue);
+  }
   alpha = -1.0;
   beta = 1.0;
   matrix_multiplication_device(d_AT_AAT_INV_A, D_PR, &D_PR,
@@ -405,7 +409,8 @@ double * interior_point(double * x_0,int verbose){
 
   x_0[0] = .25;
   x_0[1] = .25;
-  x_0[2] = .5;
+  x_0[2] = .25;
+  x_0[3] = .25;
 
   if (verbose >= 3){
     printf("\nInterior Point\n");
@@ -420,9 +425,45 @@ double * interior_point(double * x_0,int verbose){
 /* ******************************* har ************************************** */
 void har(int verbose){
   /* Assumes the matrices have been already been pinned and allocated*/
+
+  magma_int_t err ; // error handler
+  err = magma_dmalloc (&(D_BS) , MI*Z); // allocate memory in device
+
   for( int t=0; t < 1; t++){
+
+    // Project D
+    matrix_multiplication_device(D_PR, D_D, &D_D,
+    N, N, Z, N, 0, 0, 1.0, 0.0, queue);
+    if(verbose > 2){
+      printf("\n D Projected in routine \n" );
+      print_matrices_in_routine(N, Z,  D_D, 1,queue);
+    }
+
+    // Compute AI*D
     matrix_multiplication_device(D_AI, D_D, &D_AI_D,
     MI, N, Z, N, 0, 0, 1.0, 0.0, queue);
+    if(verbose > 2){
+      printf("\n D_AI_D in routine \n" );
+      print_matrices_in_routine(MI, Z,  D_AI_D, 1,queue);
+    }
+
+    // Copy B to BS
+    magmablas_dlacpy(MagmaFull, MI, Z, D_B, MI, D_BS, MI, queue);
+    if(verbose >2){
+      printf("\n BS init in routine \n" );
+      print_matrices_in_routine(MI, Z,  D_BS, 1, queue);
+    }
+
+    // Compute B - AI_X
+    matrix_multiplication_device(D_AI, D_X, &D_BS,
+    MI, N, Z, N, 0, 0, -1.0, 1, queue);
+    if(verbose >2){
+      printf("\n BS in routine \n" );
+      print_matrices_in_routine(MI, Z,  D_BS, 1, queue);
+    }
+
+    // Bring to host BS and AI*D
+
   }
 }
 /******************************************************************************/

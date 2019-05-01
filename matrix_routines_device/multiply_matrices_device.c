@@ -41,7 +41,7 @@ void matrix_multiplication_device(double *d_a, double *d_b, double **d_c,
       beta, *d_c, k_a, queue);
   }else if(trans_a==0 && trans_b==1){ // a->m*k_a, b->n*k, c->m*k
     //err = magma_dmalloc (d_c, m*k);
-    magma_dgemm(MagmaNoTrans, MagmaTrans, m, k, k_a, alpha, d_a, m, d_b, k,
+    magma_dgemm(MagmaNoTrans, MagmaTrans, m, n, k, alpha, d_a, m, d_b, k,
       beta, *d_c, m, queue);
   }
 }
