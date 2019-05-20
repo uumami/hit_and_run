@@ -219,11 +219,11 @@ int projection_matrix(int verbose){
     print_matrix_debug(H_AE, ME, N);
   }
 
-  // Allocate AE in device
+  // Allocate AE' in device
   allocate_matrices_device(H_AE, &D_AE, N, ME, queue, dev, 0);
   if(verbose > 2){
-    printf("\n AE in Routine \n" );
-    print_matrices_in_routine(ME*N, 1, D_AE, 1,queue);
+    printf("\n D_AE is Transposed in Routine \n" );
+    print_matrices_in_routine(N, ME, D_AE, 1,queue);
   }
 
   // Obtain AA'
@@ -233,7 +233,7 @@ int projection_matrix(int verbose){
     1, 0, alpha, beta, queue); // Compute AA'
   if(verbose > 2){
     printf("\n  AA' in routine \n" );
-    print_matrices_in_routine(ME*ME , 1, d_AAT, 0,queue);
+    print_matrices_in_routine(ME , ME, d_AAT, 1,queue);
 
   }
 
@@ -249,8 +249,8 @@ int projection_matrix(int verbose){
   // Obtain (AA')^⁻1(A)
   double * d_AAT_INV_A;
   err = magma_dmalloc (&d_AAT_INV_A, ME*N); // Allo_dev (AAT)⁻1(A)
-  matrix_multiplication_device(d_AAT_INV, D_AE, &d_AAT_INV_A, ME, ME, N, ME,
-  0, 0, alpha, beta, queue);
+  matrix_multiplication_device(d_AAT_INV, D_AE, &d_AAT_INV_A, ME, N, ME, ME,
+  0, 1, alpha, beta, queue);
   if(verbose > 2){
     printf("\n (AA')^-1A in routine \n" );
     print_matrices_in_routine(ME, N,  d_AAT_INV_A, 1,queue);
@@ -261,7 +261,7 @@ int projection_matrix(int verbose){
   double * d_AT_AAT_INV_A;
   err = magma_dmalloc (&d_AT_AAT_INV_A, N*N); // Allo_dev (AAT)⁻1(A)
   matrix_multiplication_device(D_AE, d_AAT_INV_A, &d_AT_AAT_INV_A,
-  ME, ME, N, N, 1, 0, alpha, beta, queue);
+  N, ME, N, ME, 0, 0, alpha, beta, queue);
   if(verbose > 2){
     printf("\n A'(AA')^-1(A) in routine\n" );
     print_matrices_in_routine(N, N,  d_AT_AAT_INV_A, 1,queue);
@@ -316,7 +316,8 @@ int create_B_matrix(int verbose){
 /* ************************** Pin D Matrix ********************************** */
 int pin_D_matrix(int verbose){
   magma_int_t err ; // error handler
-  // Since they are iidd it does not mater if it si transposed or not
+  // Since they are iidd it does not mater if it is transposed or not when allocated
+  // but then it will be transposed in host
   // Fill initial D matrix with iid observations
   err = magma_dmalloc_pinned(&H_D, N*Z);
   for( int i = 0; i < N*Z; i++){
@@ -327,8 +328,8 @@ int pin_D_matrix(int verbose){
     double * h_d;
     h_d = malloc(N*Z*sizeof(double));
     magma_dgetmatrix(N, Z, D_D, N, h_d, N, queue);
-    printf("\n D in Routine \n" );
-    print_matrix_debug_transpose(h_d, N, Z);
+    printf("\n D in Host is transposed\n" );
+    print_matrix_debug_transpose(h_d, Z, N);
     free(h_d);
   }
   return 0;
@@ -342,9 +343,9 @@ int pin_X_matrix(int verbose){
   magma_int_t err ; // error handler
   err = magma_dmalloc_pinned(&H_X, N*Z);
   // Fill X matrix with the initial vector in each column Z times
-  for( int i = 0; i < Z; i++){
-    for(int j = 0; j < N; j++){
-      H_X[i*N + j] = x_0[j];
+  for( int i = 0; i < N; i++){
+    for(int j = 0; j < Z; j++){
+      H_X[j*N + i] = x_0[i];
     }
   }
   if(verbose > 2){
@@ -366,7 +367,7 @@ int init_device_AI_matrix(int verbose){
   allocate_matrices_device(H_AI, &D_AI, MI, N, queue, dev, 1);
   if(verbose > 2){
     printf("\n AI in routine \n" );
-    print_matrices_in_routine(MI, N,  D_AI, 1,queue);
+    print_matrices_in_routine(MI, N,  D_AI, 0,queue);
   }
   return 0;
 }
