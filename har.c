@@ -220,20 +220,20 @@ int projection_matrix(int verbose){
   }
 
   // Allocate AE in device
-  allocate_matrices_device(H_AE, &D_AE, ME, N, queue, dev, 1);
+  allocate_matrices_device(H_AE, &D_AE, N, ME, queue, dev, 0);
   if(verbose > 2){
     printf("\n AE in Routine \n" );
-    print_matrices_in_routine(ME, N, D_AE, 1,queue);
+    print_matrices_in_routine(ME*N, 1, D_AE, 1,queue);
   }
 
   // Obtain AA'
   double *d_AAT; // AA' device pointer
   err = magma_dmalloc (&d_AAT, ME*ME); // Allocate space for AA' in device
-  matrix_multiplication_device(H_AE, H_AE, &d_AAT, ME, ME, N, N,
-    0, 1, alpha, beta, queue); // Compute AA'
+  matrix_multiplication_device(H_AE, H_AE, &d_AAT, N, N, ME, ME,
+    1, 0, alpha, beta, queue); // Compute AA'
   if(verbose > 2){
     printf("\n  AA' in routine \n" );
-    print_matrices_in_routine(ME*ME , 1, d_AAT, 1,queue);
+    print_matrices_in_routine(ME*ME , 1, d_AAT, 0,queue);
 
   }
 
