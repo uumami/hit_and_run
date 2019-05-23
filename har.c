@@ -432,8 +432,8 @@ int fill_matrix_zeros(double ** A, int m, int n){
 }
 /******************************************************************************/
 
-/* ******************************* har ************************************** */
-void har(int verbose){
+/* ******************************* MHAR ************************************** */
+void mhar(int verbose, int iters){
   /* Assumes the matrices have been already been pinned and allocated*/
 
   magma_int_t err ; // error handler
@@ -445,7 +445,15 @@ void har(int verbose){
   int control_max =0; // Counter for first positive lambda
   double aux_coeff = 0;
   int pos = 0;
-  for( int t=0; t < 2; t++){
+
+  // MHAR loop
+  for( int t=0; t < iters; t++){
+
+    int percentage = (int)( ( ((float)t) / (float)iters )*100);
+    if( (percentage % 10) == 0){
+      printf("\n Inter = %d of %d\n",t, iters );
+    }
+
     // Project D
     matrix_multiplication_device(D_PR, D_D, &D_D,
     N, N, Z, N, 0, 0, 1.0, 0.0, queue);
@@ -599,7 +607,6 @@ int main(){
   clock_t end ;
 
   // Iterations
-  Iter = 5;
   // Allocate matrices in host
   begin = clock();
   allocate_matrices_host_har(verbose);
@@ -645,7 +652,8 @@ int main(){
   } // End calculate projection Matrix
 
   // Initialize padding
-  Z = N+2;
+  Z = 500;
+  Iter = 10000*N*N*N;
 
   // Create BI matrix
   begin = clock();
@@ -698,15 +706,15 @@ int main(){
   // End Initialize AI_D
 
 
-  // HAR
+  // MHAR
   begin = clock();
-  har(verbose);
+  mhar(verbose, Iter);
   end = clock();
   time_spent = (double)(end - begin) / CLOCKS_PER_SEC;
   if (verbose > 0){
-    printf("\n ---- HAR: %lf\n", time_spent);
+    printf("\n ---- MHAR: %lf\n", time_spent);
   }
-  // HAR
+  // MHAR
 
 
   // Free allocated matrices in the host
