@@ -86,11 +86,11 @@ double *H_AI_D; // To check negativity conditions
 double *D_AI_D; // To multiply in device
 
 // Pointer to LAMBDA = (B - AI*X)/(AI*D)
-double *H_LAM;
-double *D_LAM;
+//double *H_LAM;
+//double *D_LAM;
 
 // Pointer to Gamma. Which mask negative and positive coefficients of LAMBDA
-int *H_GAMMA;
+//int *H_GAMMA;
 
 /* -------------------------------------------------------------------------- */
 
@@ -296,7 +296,7 @@ int create_B_matrix(int verbose){
   err = magma_dmalloc_pinned(&H_BI, MI*Z);
   for( int i = 0; i < Z; i++){
     for(int j = 0; j < MI; j++){
-      H_BI[i*MI + j] = H_bI[j]; // No transposed in host
+      H_BI[i*MI + j] = H_bI[j];
     }
   }
   if(verbose > 2){
@@ -422,6 +422,15 @@ double * interior_point(double * x_0,int verbose){
 }// end of interior
 /******************************************************************************/
 
+/* ****************************** Fill matrix 0s ********************************* */
+
+int fill_matrix_zeros(double ** A, int m, int n){
+  for(int i = 0; i < m*n; i ++){
+    (*A)[i] = 0.0;
+  }
+  return 1;
+}
+/******************************************************************************/
 
 /* ******************************* har ************************************** */
 void har(int verbose){
@@ -429,9 +438,14 @@ void har(int verbose){
 
   magma_int_t err ; // error handler
   err = magma_dmalloc (&(D_BS) , MI*Z); // allocate memory in device
+  err = magma_dmalloc_pinned(&H_BS, MI*Z);
 
-  for( int t=0; t < 1; t++){
-
+  double l_neg, l_pos, theta;
+  int control_min =0; // Counter for first negative lambda
+  int control_max =0; // Counter for first positive lambda
+  double aux_coeff = 0;
+  int pos = 0;
+  for( int t=0; t < 2; t++){
     // Project D
     matrix_multiplication_device(D_PR, D_D, &D_D,
     N, N, Z, N, 0, 0, 1.0, 0.0, queue);
@@ -448,26 +462,94 @@ void har(int verbose){
       print_matrices_in_routine(MI, Z,  D_AI_D, 1,queue);
     }
 
-    // Copy B to BS
+    // Copy B to BS in order to do BS - AIX = BS without affecting B
     magmablas_dlacpy(MagmaFull, MI, Z, D_B, MI, D_BS, MI, queue);
     if(verbose >2){
       printf("\n BS init in routine \n" );
       print_matrices_in_routine(MI, Z,  D_BS, 1, queue);
     }
 
-    // Compute B - AI_X
+    // Compute B - AI_X=BS. This overwrites the values stored in BS
     matrix_multiplication_device(D_AI, D_X, &D_BS,
-    MI, N, Z, N, 0, 0, -1.0, 1, queue);
+    MI, N, Z, N, 0, 0, -1.0, 1.0, queue);
     if(verbose >2){
       printf("\n BS in routine \n" );
       print_matrices_in_routine(MI, Z,  D_BS, 1, queue);
     }
 
-    // Bring to host BS and AI*D
+    // Bring AI*D
+    magma_dgetmatrix(MI, Z, D_AI_D, MI, H_AI_D, MI, queue);
+    if(verbose >2){
+      printf("\n AI_D in Dev \n" );
+      print_matrix_debug_transpose(H_AI_D, MI, Z);
+    }
 
+    //Bring BS
+    magma_dgetmatrix(MI, Z, D_BS, MI, H_BS, MI, queue);
+    if(verbose >2){
+      printf("\n D_BS in Dev \n" );
+      print_matrix_debug_transpose(H_BS, MI, Z);
+    }
+
+    //Bring X
+    magma_dgetmatrix(N, Z, D_X, N, H_X, N, queue);
+    if(verbose > 2){
+      printf("\n X in HOST IS Transposed \n" );
+      print_matrix_debug_transpose(H_X, N, Z);
+    }
+
+    //Bring D
+    magma_dgetmatrix(N, Z, D_D, N, H_D, N, queue);
+    if(verbose > 2){
+      printf("\n D in HOST IS Transposed \n" );
+      print_matrix_debug_transpose(H_D, N, Z);
+    }
+
+    for(int pad = 0; pad < Z; pad ++){ // Loop over the padding
+
+      control_min = 0;
+      control_max = 0;
+
+      for(int m_i = 0; m_i < MI; m_i ++){ // Loop over the possible restrictions
+        pos = pad*MI + m_i;
+        aux_coeff =  H_BS[pos]/ H_AI_D[pos]; // Fraction (B-AX) / AD
+        if(H_AI_D[pos] < 0.0){ // The denominator is negative
+          if(control_min == 0){ l_neg = aux_coeff, control_min=1;}
+          else if(aux_coeff > l_neg){l_neg = aux_coeff;}
+        } // ends negative lambda if
+        if(H_AI_D[pos] > 0.0){ // The denominator is positive
+          if(control_max == 0){ l_pos = aux_coeff, control_max=1;}
+          else if(aux_coeff < l_pos){l_pos = aux_coeff;}
+        } // ends positive lambda if
+      }
+
+      // Find theta
+      theta = ldexp(pcg64_random(), -64);
+      while(theta == 0.0){ // The generator may generate 0.0, so we iterate again
+        theta = ldexp(pcg64_random(), -64);
+      }
+      theta = theta*l_pos + (1.0-theta)*l_neg; // Convex combination
+
+      // Make the linear combination
+      for(int pos_x = 0; pos_x < N; pos_x++){
+        H_X[pos_x + pad*Z] = H_X[pos_x + pad*Z] + theta * H_D[pos_x + pad*Z];
+      }
+    } // End New Point Loop
+
+    // Send X to device
+    allocate_matrices_device(H_X, &D_X, N, Z, queue, dev, 0);
+    // Generate new D
+    for( int i = 0; i < N*Z; i++){
+      H_D[i] = box_muller();
+    }
+    allocate_matrices_device(H_D, &D_D, N, Z, queue, dev, 0); // Send D to Device
+    if(verbose >2){
+      printf("\n D in routine \n" );
+      print_matrices_in_routine(MI, Z,  D_BS, 1, queue);
+    }
   }
 }
-/******************************************************************************/
+/***********************************************************************************/
 
 
 /* ********************** free allocated host matrices *********************  */
@@ -477,6 +559,7 @@ int free_host_matrices_har(){
   magma_free_pinned(H_BI);
   magma_free_pinned(H_D);
   magma_free_pinned(H_X);
+  magma_free_pinned(H_BS);
 
   free(H_AI);
   free(H_bE);
@@ -495,6 +578,7 @@ int free_device_matrices_har(){
   magma_free (D_B);
   magma_free (D_D);
   magma_free (D_X);
+  magma_free (D_BS);
 
   return 0;
 }// End free_device_matrices_har
@@ -509,7 +593,7 @@ int main(){
   * 2 Prints Dimensions
   * 3 Prints Matrices
   */
-  int verbose = 3;
+  int verbose = 1;
   double time_spent;
   clock_t begin;
   clock_t end ;
