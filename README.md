@@ -1,34 +1,27 @@
 # hit_and_run
-Hit and Run algorithm for a regular polytope, using GPGPU. (MAGMA, MKL, CUBLAS
-LINPACK, LPSOLVER).
-
-In this branch we take many direction at the same time ad project them to the
-hyperplane. THus, generating multiple random walks while taking advantage of
-the matrix-to-matrix multiplication vs matrix-to-vector. Given the thinning
-factor of n, this improves the algorithm. 
+Hit and Run algorithm for a regular polytope, using GPGPU. (MAGMA, LPSOLVER, PCG-c).
 
 To do Investigation:
-- Compare Strassen multiplication in the gpu against CUBLAS routines, 
-and find the sweetspot between them.
-- Find the best algorithm to find an interiror point in the polytope, as for now
-Chebysehv center is the winner.
-- Find a suitable pseudorandom geenrator for C (ask Gary)
+- Change the spath.sh in order to reflect the correct paths of the MAGMA libraries in the docker.
+- Add a tutorial
 
 Possible to do:
 + Modify the algorithm to support sparse matrices.
-+ Use SCALAPACK to make the algorithm distributed.
++ Add Strassen GPU
++ Add prototype functions to the headers to ease exposition
 
-To do Code: (REVAMP the old code)
-+ Pseudocode
-+ Structure
-+ Read Matrices (probably in row major, instead of column major)
-+ Find Inner Point (Chebyshev center)
-+ Calculate projection Matrix
-+ Generate direction (n2 directions ~Normal iid) Mersenne Twister
-+ Project d
-+ Find lambdas (FIND LINE SEGMENT)
-+ Take random point from the line segment
+Nice to have:
++ Manage MAGAM threads via CUDA kernels in order to drastically reduce HOST-DEVICE communication.
 
-To do code investigation:
-+ It may be better to extract the xs every n iterations, and thus reducing the
-device-host comunication. I may need to use some CUDA directives.
+
+
+Instructions, No Docker:
++ Clone the repository
++ Modify the .txt files in the input_matrices directory (columns separated by spaces, and rows by \n)
++ You need CUDA 6.0 or higher in order to run the routines so install it.
++ Modify the Makefile to refrect the correct paths for CUDA binaries and compilers in your computer.
++ Modify paths.sh to refeclec the correct directories of the libraries specified in the same file.
++ RUN:
+  $ make
+  $ ./har.o
++ Have Fun
