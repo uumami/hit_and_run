@@ -1,9 +1,10 @@
 # hit_and_run
 Hit and Run algorithm for a regular polytope, using GPGPU. (MAGMA, LPSOLVER, PCG-c).
 
-To do Investigation:
+Most Investigation:
 - Change the spath.sh in order to reflect the correct paths of the MAGMA libraries in the docker.
 - Add a tutorial
+- Fix the bug in the Chebyshev Routine (as of now is hardcoded to be able to replicate it)
 
 Possible to do:
 + Modify the algorithm to support sparse matrices.
