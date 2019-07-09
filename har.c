@@ -134,9 +134,10 @@ int allocate_matrices_host_har(int verbose){
   // Parse Equality vector for rows
   FILE *b_eq    = fopen(bE_TXT, "r");
   ME = count_rows(b_eq);
-  b_eq    = fopen(bE_TXT, "r");
+  b_eq = fopen(bE_TXT, "r");
   H_bE = allocate_matrices_host(b_eq, ME);
   fclose(b_eq);
+
   // Parse Inequality vector for rows
   FILE *b_in    = fopen(bI_TXT, "r");
   MI = count_rows(b_in);
@@ -159,12 +160,14 @@ int allocate_matrices_host_har(int verbose){
   fclose(a_in);
 
   // This condition is only tiggered if some matrix is empty
-  if(NI != NE){
+  if((NI != NE) && (NE != 0)){
     printf(" THE NUMBER OF VARIABLES IN EACH MATRIX DIFFERS. WE WILL \
-    TAKE THE NUMBER OF VARIABLES (COLUMNS) IN THE EQUALITY RESTRICTIONS \
+    TAKE THE NUMBER OF VARIABLES (COLUMNS) IN THE INEQUALITY RESTRICTIONS \
     AS %u.\n", N);
+  }else if(NE == 0){
+    printf("\n NO EQUALITY RESTRICTIONS PROVIDED \n" );
   }
-  N = NE;
+  N = NI;
 
   // Print
   if (verbose > 1){
@@ -201,7 +204,6 @@ void generate_direction_vector(unsigned vector_size, int verbose){
   }
 }
 /******************************************************************************/
-
 
 /* ********************* Create Projection Matrix *************************** */
 int projection_matrix(int verbose){
@@ -447,10 +449,9 @@ void mhar(int verbose, int iters){
   int pos = 0;
 
   // MHAR loop
+  int iters_f = (int) ((float)iters / 10.0);
   for( int t=0; t < iters; t++){
-
-    int percentage = (int)( ( ((float)t) / (float)iters )*100);
-    if( (percentage % 10) == 0){
+    if( ((t % iters_f) == 0)){
       printf("\n Inter = %d of %d\n",t, iters );
     }
 
