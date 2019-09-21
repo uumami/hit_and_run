@@ -9,7 +9,7 @@
        @author Stan Tomov
        @author Raffaele Solca
 
-       @generated from src/zunmqr_2stage_gpu.cpp, normal z -> s, Wed Jan  2 14:18:50 2019
+       @generated from src/zunmqr_2stage_gpu.cpp, normal z -> s, Sun Sep 15 17:14:36 2019
 
 */
 #include "magma_internal.h"

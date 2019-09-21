@@ -8,7 +8,7 @@
        @author Azzam Haidar
        @author Stan Tomov
 
-       @generated from src/zhetrd_he2hb.cpp, normal z -> d, Wed Jan  2 14:18:50 2019
+       @generated from src/zhetrd_he2hb.cpp, normal z -> d, Sun Sep 15 17:14:33 2019
 
 */
 #include <cuda_runtime.h>

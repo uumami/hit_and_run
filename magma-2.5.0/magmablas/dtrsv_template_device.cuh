@@ -8,7 +8,7 @@
        @author Tingxing Dong
        @author Azzam Haidar
 
-       @generated from magmablas/ztrsv_template_device.cuh, normal z -> d, Wed Jan  2 14:18:55 2019
+       @generated from magmablas/ztrsv_template_device.cuh, normal z -> d, Sun Sep 15 17:12:11 2019
 */
 
 

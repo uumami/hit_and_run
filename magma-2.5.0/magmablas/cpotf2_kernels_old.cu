@@ -8,7 +8,7 @@
        @author Azzam Haidar
        @author Tingxing Dong
 
-       @generated from magmablas/zpotf2_kernels_old.cu, normal z -> c, Wed Jan  2 14:18:51 2019
+       @generated from magmablas/zpotf2_kernels_old.cu, normal z -> c, Sun Sep 15 17:23:49 2019
 */
 
 #include "magma_internal.h"

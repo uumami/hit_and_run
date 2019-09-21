@@ -9,7 +9,7 @@
        @author Eduardo Ponce
        @author Moritz Kreutzer
 
-       @generated from sparse/src/zidr_merge.cpp, normal z -> s, Wed Jan  2 14:18:54 2019
+       @generated from sparse/src/zidr_merge.cpp, normal z -> s, Sun Sep 15 17:37:14 2019
 */
 
 #include "magmasparse_internal.h"

@@ -8,7 +8,7 @@
        @author Azzam Haidar
        @author Ahmad Abdelfattah
 
-       @generated from magmablas/zgetf2_native_kernel.cu, normal z -> c, Wed Jan  2 14:18:51 2019
+       @generated from magmablas/zgetf2_native_kernel.cu, normal z -> c, Sun Sep 15 17:20:00 2019
 */
 
 #include "magma_internal.h"

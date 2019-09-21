@@ -5,7 +5,7 @@
        Univ. of Colorado, Denver
        @date January 2019
        
-       @generated from magmablas/zset_pointer.cu, normal z -> s, Wed Jan  2 14:18:51 2019
+       @generated from magmablas/zset_pointer.cu, normal z -> s, Sun Sep 15 17:23:50 2019
        @author Azzam Haidar
        @author Tingxing Dong
 

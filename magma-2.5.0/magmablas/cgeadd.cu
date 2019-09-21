@@ -5,7 +5,7 @@
        Univ. of Colorado, Denver
        @date January 2019
 
-       @generated from magmablas/zgeadd.cu, normal z -> c, Wed Jan  2 14:18:50 2019
+       @generated from magmablas/zgeadd.cu, normal z -> c, Sun Sep 15 17:15:40 2019
        @author Mark Gates
 */
 #include "magma_internal.h"

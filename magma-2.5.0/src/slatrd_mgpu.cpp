@@ -10,7 +10,7 @@
        @author Ichitaro Yamazaki
        @author Mark Gates
 
-       @generated from src/zlatrd_mgpu.cpp, normal z -> s, Wed Jan  2 14:18:49 2019
+       @generated from src/zlatrd_mgpu.cpp, normal z -> s, Sun Sep 15 17:14:28 2019
 
 */
 #include "magma_internal.h"

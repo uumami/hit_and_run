@@ -7,7 +7,7 @@
        
        @author Stan Tomov
 
-       @generated from src/zgeqr2x_gpu-v2.cpp, normal z -> d, Wed Jan  2 14:18:49 2019
+       @generated from src/zgeqr2x_gpu-v2.cpp, normal z -> d, Sun Sep 15 17:13:38 2019
 
 */
 #include "magma_internal.h"

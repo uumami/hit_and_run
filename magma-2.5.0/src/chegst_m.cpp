@@ -8,7 +8,7 @@
        @author Raffaele Solca
        @author Azzam Haidar
 
-       @generated from src/zhegst_m.cpp, normal z -> c, Wed Jan  2 14:18:50 2019
+       @generated from src/zhegst_m.cpp, normal z -> c, Sun Sep 15 17:14:50 2019
 */
 #include "magma_internal.h"
 

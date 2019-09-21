@@ -5,7 +5,7 @@
        Univ. of Colorado, Denver
        @date January 2019
 
-       @generated from testing/testing_zherk_batched.cpp, normal z -> d, Wed Jan  2 14:18:53 2019
+       @generated from testing/testing_zherk_batched.cpp, normal z -> d, Sun Sep 15 17:30:51 2019
        @author Chongxiao Cao
        @author Tingxing Dong
 */

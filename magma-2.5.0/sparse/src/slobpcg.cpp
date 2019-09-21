@@ -9,7 +9,7 @@
        @author Stan Tomov
        @author Hartwig Anzt
 
-       @generated from sparse/src/zlobpcg.cpp, normal z -> s, Wed Jan  2 14:18:55 2019
+       @generated from sparse/src/zlobpcg.cpp, normal z -> s, Sun Sep 15 17:37:40 2019
 */
 #include "magmasparse_internal.h"
 

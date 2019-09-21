@@ -14,10 +14,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         liblapacke-dev \
         libnccl-dev=$NCCL_VERSION-1+cuda10.0 && \
         rm -rf /var/lib/apt/lists/*
-
 ENV LIBRARY_PATH /usr/local/cuda/lib64/stubs
 
 ARG CACHEBUST=1
 COPY . /app
 WORKDIR /app
-CMD ["/bin/bash"]
+CMD ["/bin/bash"] 

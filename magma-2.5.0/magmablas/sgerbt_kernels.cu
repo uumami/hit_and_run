@@ -5,7 +5,7 @@
        Univ. of Colorado, Denver
        @date January 2019
 
-       @generated from magmablas/zgerbt_kernels.cu, normal z -> s, Wed Jan  2 14:18:50 2019
+       @generated from magmablas/zgerbt_kernels.cu, normal z -> s, Sun Sep 15 17:16:05 2019
 
 
        @author Adrien REMY

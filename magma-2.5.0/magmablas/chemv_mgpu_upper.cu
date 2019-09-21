@@ -10,7 +10,7 @@
        chemv_kernel_U (upper) in chemv_upper.cu is very similar to
        chemv_kernel_L (lower) in chemv.cu; diff the two files to compare.
        
-       @generated from magmablas/zhemv_mgpu_upper.cu, normal z -> c, Wed Jan  2 14:18:51 2019
+       @generated from magmablas/zhemv_mgpu_upper.cu, normal z -> c, Sun Sep 15 17:19:20 2019
        
        @author Mark Gates
 */

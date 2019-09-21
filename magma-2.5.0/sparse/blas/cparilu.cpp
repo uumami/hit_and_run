@@ -7,7 +7,7 @@
 
        @author Hartwig Anzt
 
-       @generated from sparse/blas/zparilu.cpp, normal z -> c, Wed Jan  2 14:18:53 2019
+       @generated from sparse/blas/zparilu.cpp, normal z -> c, Sun Sep 15 17:34:26 2019
 */
 #include "magmasparse_internal.h"
 

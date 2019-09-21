@@ -8,7 +8,7 @@
    @author Azzam Haidar
    @author Adrien Remy
 
-   @generated from src/zgetrf_nopiv_batched.cpp, normal z -> s, Wed Jan  2 14:18:50 2019
+   @generated from src/zgetrf_nopiv_batched.cpp, normal z -> s, Sun Sep 15 17:15:13 2019
  */
 #include <cuda_runtime.h>
 

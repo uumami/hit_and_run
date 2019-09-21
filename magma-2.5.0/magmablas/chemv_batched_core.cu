@@ -5,7 +5,7 @@
        Univ. of Colorado, Denver
        @date January 2019
 
-       @generated from magmablas/zhemv_batched_core.cu, normal z -> c, Wed Jan  2 14:18:51 2019
+       @generated from magmablas/zhemv_batched_core.cu, normal z -> c, Sun Sep 15 17:20:17 2019
 
        @author Ahmad Abdelfattah
        

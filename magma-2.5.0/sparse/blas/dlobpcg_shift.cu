@@ -5,7 +5,7 @@
        Univ. of Colorado, Denver
        @date January 2019
 
-       @generated from sparse/blas/zlobpcg_shift.cu, normal z -> d, Wed Jan  2 14:18:53 2019
+       @generated from sparse/blas/zlobpcg_shift.cu, normal z -> d, Sun Sep 15 17:32:56 2019
 
 */
 #include "magmasparse_internal.h"

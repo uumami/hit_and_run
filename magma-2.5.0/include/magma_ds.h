@@ -5,7 +5,7 @@
        Univ. of Colorado, Denver
        @date January 2019
 
-       @generated from include/magma_zc.h, mixed zc -> ds, Wed Jan  2 14:18:55 2019
+       @generated from include/magma_zc.h, mixed zc -> ds, Sun Sep 15 17:12:09 2019
 */
 
 #ifndef MAGMA_DS_H

@@ -8,7 +8,7 @@
        @author Tingxing Dong
        @author Azzam Haidar
 
-       @generated from magmablas/ztrsv_batched.cu, normal z -> s, Wed Jan  2 14:18:51 2019
+       @generated from magmablas/ztrsv_batched.cu, normal z -> s, Sun Sep 15 17:24:39 2019
 */
 
 #include "magma_internal.h"

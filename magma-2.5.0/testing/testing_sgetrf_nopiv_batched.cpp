@@ -8,7 +8,7 @@
    @author Azzam Haidar
    @author Tingxing Dong
 
-   @generated from testing/testing_zgetrf_nopiv_batched.cpp, normal z -> s, Wed Jan  2 14:18:53 2019
+   @generated from testing/testing_zgetrf_nopiv_batched.cpp, normal z -> s, Sun Sep 15 17:31:13 2019
  */
 // includes, system
 #include <stdlib.h>

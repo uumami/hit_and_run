@@ -8,7 +8,7 @@
        @author Hatem Ltaief
        @author Mark Gates
        
-       @generated from src/zlauum.cpp, normal z -> c, Wed Jan  2 14:18:48 2019
+       @generated from src/zlauum.cpp, normal z -> c, Sun Sep 15 17:13:12 2019
 
 */
 #include "magma_internal.h"

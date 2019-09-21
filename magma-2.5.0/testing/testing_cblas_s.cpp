@@ -4,7 +4,7 @@
        Univ. of California, Berkeley
        Univ. of Colorado, Denver
 
-       @generated from testing/testing_cblas_z.cpp, normal z -> s, Wed Jan  2 14:18:52 2019
+       @generated from testing/testing_cblas_z.cpp, normal z -> s, Sun Sep 15 17:27:51 2019
        @author Mark Gates
        
        These tests ensure that the MAGMA implementations of CBLAS routines

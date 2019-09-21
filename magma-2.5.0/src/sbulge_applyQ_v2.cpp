@@ -9,7 +9,7 @@
        @author Stan Tomov
        @author Raffaele Solca
   
-       @generated from src/zbulge_applyQ_v2.cpp, normal z -> s, Wed Jan  2 14:18:49 2019
+       @generated from src/zbulge_applyQ_v2.cpp, normal z -> s, Sun Sep 15 17:14:31 2019
 */
 #include <cuda_runtime.h>
 

@@ -5,7 +5,7 @@
        Univ. of Colorado, Denver
        @date January 2019
 
-       @generated from testing/testing_ztrmm_vbatched.cpp, normal z -> s, Wed Jan  2 14:18:53 2019
+       @generated from testing/testing_ztrmm_vbatched.cpp, normal z -> s, Sun Sep 15 17:31:41 2019
        @author Chongxiao Cao
 */
 

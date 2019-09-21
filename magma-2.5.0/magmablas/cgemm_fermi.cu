@@ -5,7 +5,7 @@
        Univ. of Colorado, Denver
        @date January 2019
 
-       @generated from magmablas/zgemm_fermi.cu, normal z -> c, Wed Jan  2 14:18:50 2019
+       @generated from magmablas/zgemm_fermi.cu, normal z -> c, Sun Sep 15 17:15:49 2019
 
        @author Jakub Kurzak
        @author Stan Tomov

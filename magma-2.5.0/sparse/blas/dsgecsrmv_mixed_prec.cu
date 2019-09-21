@@ -5,7 +5,7 @@
        Univ. of Colorado, Denver
        @date January 2019
 
-       @generated from sparse/blas/zcgecsrmv_mixed_prec.cu, mixed zc -> ds, Wed Jan  2 14:18:53 2019
+       @generated from sparse/blas/zcgecsrmv_mixed_prec.cu, mixed zc -> ds, Sun Sep 15 17:34:24 2019
 
 */
 #include "magmasparse_internal.h"

@@ -5,7 +5,7 @@
        Univ. of Colorado, Denver
        @date January 2019
   
-       @generated from testing/testing_ztrtri_gpu.cpp, normal z -> c, Wed Jan  2 14:18:52 2019
+       @generated from testing/testing_ztrtri_gpu.cpp, normal z -> c, Sun Sep 15 17:28:34 2019
        
        @author Mark Gates
 */

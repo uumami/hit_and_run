@@ -7,7 +7,7 @@
 
        @author Stan Tomov
        
-       @generated from src/zgetrf_nopiv_gpu.cpp, normal z -> c, Wed Jan  2 14:18:49 2019
+       @generated from src/zgetrf_nopiv_gpu.cpp, normal z -> c, Sun Sep 15 17:13:19 2019
 
 */
 #include "magma_internal.h"

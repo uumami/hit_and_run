@@ -9,7 +9,7 @@
        @author Eduardo Ponce
        @author Moritz Kreutzer
 
-       @generated from sparse/src/zpidr_strms.cpp, normal z -> s, Wed Jan  2 14:18:55 2019
+       @generated from sparse/src/zpidr_strms.cpp, normal z -> s, Sun Sep 15 17:37:35 2019
 */
 
 #include "magmasparse_internal.h"

@@ -7,7 +7,7 @@
 
        @author Tobias Ribizel
 
-       @generated from sparse/blas/magma_zsampleselect.cu, normal z -> d, Wed Jan  2 14:18:54 2019
+       @generated from sparse/blas/magma_zsampleselect.cu, normal z -> d, Sun Sep 15 17:34:53 2019
 */
 
 #include "magma_sampleselect.h"

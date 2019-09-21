@@ -8,7 +8,7 @@
        @author Hatem Ltaief
        @author Mark Gates
 
-       @generated from src/ztrtri_gpu.cpp, normal z -> d, Wed Jan  2 14:18:48 2019
+       @generated from src/ztrtri_gpu.cpp, normal z -> d, Sun Sep 15 17:13:05 2019
 
 */
 #include "magma_internal.h"

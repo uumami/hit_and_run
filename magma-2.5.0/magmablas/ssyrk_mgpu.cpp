@@ -8,7 +8,7 @@
        @author Azzam Haidar
        @author Ichi Yamazaki
 
-       @generated from magmablas/zherk_mgpu.cpp, normal z -> s, Wed Jan  2 14:18:51 2019
+       @generated from magmablas/zherk_mgpu.cpp, normal z -> s, Sun Sep 15 17:19:23 2019
 
 */
 #include "magma_internal.h"

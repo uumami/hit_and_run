@@ -5,7 +5,7 @@
        Univ. of Colorado, Denver
        @date January 2019
   
-       @generated from testing/testing_zpotri.cpp, normal z -> c, Wed Jan  2 14:18:52 2019
+       @generated from testing/testing_zpotri.cpp, normal z -> c, Sun Sep 15 17:28:42 2019
 */
 // includes, system
 #include <stdlib.h>

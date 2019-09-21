@@ -5,7 +5,7 @@
        Univ. of Colorado, Denver
        @date January 2019
 
-       @generated from src/zpotrf_mgpu.cpp, normal z -> d, Wed Jan  2 14:18:48 2019
+       @generated from src/zpotrf_mgpu.cpp, normal z -> d, Sun Sep 15 17:13:06 2019
 
 */
 #include "magma_internal.h"

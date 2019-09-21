@@ -8,7 +8,7 @@
    @author Azzam Haidar
    @author Tingxing Dong
 
-   @generated from src/zgetf2_batched.cpp, normal z -> c, Wed Jan  2 14:18:50 2019
+   @generated from src/zgetf2_batched.cpp, normal z -> c, Sun Sep 15 17:15:10 2019
 */
 #include "magma_internal.h"
 #include "batched_kernel_param.h"

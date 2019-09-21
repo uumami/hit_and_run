@@ -9,7 +9,7 @@
        @author Tingxing Dong
        @author Azzam Haidar
 
-       @generated from magmablas/zgemv_fermi.cu, normal z -> s, Wed Jan  2 14:18:50 2019
+       @generated from magmablas/zgemv_fermi.cu, normal z -> s, Sun Sep 15 17:15:59 2019
 */
 #include "magma_internal.h"
 #include "commonblas_s.h"

@@ -6,7 +6,7 @@
        @date January 2019
 
        @author Mark Gates
-       @generated from testing/magma_zgesvd_check.cpp, normal z -> d, Wed Jan  2 14:18:52 2019
+       @generated from testing/magma_zgesvd_check.cpp, normal z -> d, Sun Sep 15 17:25:51 2019
 */
 
 #include "magma_v2.h"

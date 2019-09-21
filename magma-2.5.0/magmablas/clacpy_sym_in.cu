@@ -9,7 +9,7 @@
        @author Azzam Haidar
        @author Ichitaro Yamazaki
        
-       @generated from magmablas/zlacpy_sym_in.cu, normal z -> c, Wed Jan  2 14:18:50 2019
+       @generated from magmablas/zlacpy_sym_in.cu, normal z -> c, Sun Sep 15 17:16:27 2019
 
 */
 #include "magma_internal.h"

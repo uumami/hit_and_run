@@ -5,7 +5,7 @@
        Univ. of Colorado, Denver
        @date January 2019
 
-       @generated from magmablas/zlascl_2x2.cu, normal z -> s, Wed Jan  2 14:18:51 2019
+       @generated from magmablas/zlascl_2x2.cu, normal z -> s, Sun Sep 15 17:17:15 2019
 
        @author Ichitaro Yamazaki
 */

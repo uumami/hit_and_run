@@ -5,7 +5,7 @@
        Univ. of Colorado, Denver
        @date January 2019
 
-       @generated from sparse/src/zbicg.cpp, normal z -> s, Wed Jan  2 14:18:54 2019
+       @generated from sparse/src/zbicg.cpp, normal z -> s, Sun Sep 15 17:36:57 2019
        @author Hartwig Anzt
 
 */

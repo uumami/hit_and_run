@@ -7,7 +7,7 @@
 
        @author Tingxing Dong
 
-       @generated from magmablas/zlarfg_devicesfunc.cuh, normal z -> s, Wed Jan  2 14:18:55 2019
+       @generated from magmablas/zlarfg_devicesfunc.cuh, normal z -> s, Sun Sep 15 17:12:11 2019
 */
 
 #include "magma_templates.h"

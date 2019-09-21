@@ -6,7 +6,7 @@
        @date January 2019
 
        @author Mark Gates
-       @generated from interface_cuda/blas_z_v1.cpp, normal z -> s, Wed Jan  2 14:18:48 2019
+       @generated from interface_cuda/blas_z_v1.cpp, normal z -> s, Sun Sep 15 17:12:58 2019
 */
 #ifndef MAGMA_NO_V1
 

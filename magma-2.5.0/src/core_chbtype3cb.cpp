@@ -7,7 +7,7 @@
 
        @author Azzam Haidar
 
-       @generated from src/core_zhbtype3cb.cpp, normal z -> c, Wed Jan  2 14:18:50 2019
+       @generated from src/core_zhbtype3cb.cpp, normal z -> c, Sun Sep 15 17:14:45 2019
 
 */
 #include "magma_internal.h"

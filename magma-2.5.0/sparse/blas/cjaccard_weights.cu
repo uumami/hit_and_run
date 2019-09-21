@@ -7,7 +7,7 @@
 
        @author Hartwig Anzt
 
-       @generated from sparse/blas/zjaccard_weights.cu, normal z -> c, Wed Jan  2 14:18:54 2019
+       @generated from sparse/blas/zjaccard_weights.cu, normal z -> c, Sun Sep 15 17:35:29 2019
 */
 #include "magmasparse_internal.h"
 

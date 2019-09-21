@@ -8,7 +8,7 @@
        @author Stan Tomov
        @author Mark Gates
 
-       @generated from src/zunmqr_gpu.cpp, normal z -> c, Wed Jan  2 14:18:49 2019
+       @generated from src/zunmqr_gpu.cpp, normal z -> c, Sun Sep 15 17:13:46 2019
 
 */
 #include "magma_internal.h"

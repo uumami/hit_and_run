@@ -5,7 +5,7 @@
        Univ. of Colorado, Denver
        @date January 2019
 
-       @generated from magmablas/zlacpy_conj.cu, normal z -> s, Wed Jan  2 14:18:50 2019
+       @generated from magmablas/zlacpy_conj.cu, normal z -> s, Sun Sep 15 17:16:22 2019
 
 */
 #include "magma_internal.h"

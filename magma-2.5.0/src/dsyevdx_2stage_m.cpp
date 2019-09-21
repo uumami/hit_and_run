@@ -9,7 +9,7 @@
        @author Stan Tomov
        @author Raffaele Solca
 
-       @generated from src/zheevdx_2stage_m.cpp, normal z -> d, Wed Jan  2 14:18:50 2019
+       @generated from src/zheevdx_2stage_m.cpp, normal z -> d, Sun Sep 15 17:14:41 2019
 
 */
 #include "magma_internal.h"

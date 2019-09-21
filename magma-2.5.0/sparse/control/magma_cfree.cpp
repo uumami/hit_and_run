@@ -5,7 +5,7 @@
        Univ. of Colorado, Denver
        @date January 2019
 
-       @generated from sparse/control/magma_zfree.cpp, normal z -> c, Wed Jan  2 14:18:54 2019
+       @generated from sparse/control/magma_zfree.cpp, normal z -> c, Sun Sep 15 17:36:02 2019
        @author Hartwig Anzt
 */
 #include "magmasparse_internal.h"

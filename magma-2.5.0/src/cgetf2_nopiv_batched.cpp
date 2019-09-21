@@ -8,7 +8,7 @@
    @author Azzam Haidar
    @author Adrien Remy
 
-   @generated from src/zgetf2_nopiv_batched.cpp, normal z -> c, Wed Jan  2 14:18:50 2019
+   @generated from src/zgetf2_nopiv_batched.cpp, normal z -> c, Sun Sep 15 17:15:11 2019
 */
 
 #include "magma_internal.h"

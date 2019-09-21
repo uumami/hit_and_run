@@ -9,7 +9,7 @@
        @author Eduardo Ponce
        @author Stephen Wood
 
-       @generated from sparse/src/zidr.cpp, normal z -> s, Wed Jan  2 14:18:54 2019
+       @generated from sparse/src/zidr.cpp, normal z -> s, Sun Sep 15 17:37:13 2019
 */
 
 #include "magmasparse_internal.h"

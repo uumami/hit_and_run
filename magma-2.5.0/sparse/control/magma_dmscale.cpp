@@ -5,7 +5,7 @@
        Univ. of Colorado, Denver
        @date January 2019
 
-       @generated from sparse/control/magma_zmscale.cpp, normal z -> d, Wed Jan  2 14:18:54 2019
+       @generated from sparse/control/magma_zmscale.cpp, normal z -> d, Sun Sep 15 17:36:16 2019
        @author Hartwig Anzt
        @author Stephen Wood
 

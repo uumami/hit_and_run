@@ -8,7 +8,7 @@
    @author Azzam Haidar
    @author Ahmad Abdelfattah
 
-   @generated from magmablas/zpotf2_kernels_var.cu, normal z -> s, Wed Jan  2 14:18:52 2019
+   @generated from magmablas/zpotf2_kernels_var.cu, normal z -> s, Sun Sep 15 17:25:40 2019
  */
 #define PRECISION_s
 

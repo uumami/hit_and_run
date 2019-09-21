@@ -7,7 +7,7 @@
 
        @author Hartwig Anzt
 
-       @generated from sparse/src/zcg.cpp, normal z -> d, Wed Jan  2 14:18:54 2019
+       @generated from sparse/src/zcg.cpp, normal z -> d, Sun Sep 15 17:36:52 2019
 */
 
 #include "magmasparse_internal.h"

@@ -8,7 +8,7 @@
    @author Azzam Haidar
    @author Mark Gates
 
-   @generated from testing/testing_zgetri_batched.cpp, normal z -> c, Wed Jan  2 14:18:53 2019
+   @generated from testing/testing_zgetri_batched.cpp, normal z -> c, Sun Sep 15 17:31:16 2019
  */
 // includes, system
 #include <stdlib.h>

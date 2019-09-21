@@ -10,7 +10,7 @@
        dsymv_kernel_U (upper) in dsymv_upper.cu is very similar to
        dsymv_kernel_L (lower) in dsymv.cu; diff the two files to compare.
        
-       @generated from magmablas/zhemv_upper.cu, normal z -> d, Wed Jan  2 14:18:51 2019
+       @generated from magmablas/zhemv_upper.cu, normal z -> d, Sun Sep 15 17:16:14 2019
        
        @author Mark Gates
 */

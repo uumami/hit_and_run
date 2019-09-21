@@ -10,7 +10,7 @@
        @author Mark Gates
        @author Azzam Haidar
     
-       @generated from src/zheevdx_gpu.cpp, normal z -> c, Wed Jan  2 14:18:49 2019
+       @generated from src/zheevdx_gpu.cpp, normal z -> c, Sun Sep 15 17:14:17 2019
 
 */
 #include "magma_internal.h"

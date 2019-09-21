@@ -10,7 +10,7 @@
        @author Azzam Haidar
        @author Mark Gates
 
-       @generated from testing/testing_zhetrd_gpu.cpp, normal z -> c, Wed Jan  2 14:18:52 2019
+       @generated from testing/testing_zhetrd_gpu.cpp, normal z -> c, Sun Sep 15 17:30:05 2019
 
 */
 

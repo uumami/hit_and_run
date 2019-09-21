@@ -5,7 +5,7 @@
        Univ. of Colorado, Denver
        @date January 2019
 
-       @generated from src/zungtr.cpp, normal z -> c, Wed Jan  2 14:18:49 2019
+       @generated from src/zungtr.cpp, normal z -> c, Sun Sep 15 17:14:25 2019
 
 */
 #include "magma_internal.h"

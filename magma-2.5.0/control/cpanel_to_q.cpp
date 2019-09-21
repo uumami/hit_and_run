@@ -6,7 +6,7 @@
        @date January 2019
 
        @author Mark Gates
-       @generated from control/zpanel_to_q.cpp, normal z -> c, Wed Jan  2 14:18:48 2019
+       @generated from control/zpanel_to_q.cpp, normal z -> c, Sun Sep 15 17:12:57 2019
 */
 #include "magma_internal.h"
 

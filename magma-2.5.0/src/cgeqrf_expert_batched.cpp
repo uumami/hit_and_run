@@ -8,7 +8,7 @@
        @author Azzam Haidar
        @author Tingxing Dong
 
-       @generated from src/zgeqrf_expert_batched.cpp, normal z -> c, Wed Jan  2 14:18:50 2019
+       @generated from src/zgeqrf_expert_batched.cpp, normal z -> c, Sun Sep 15 17:15:28 2019
 */
 #include "magma_internal.h"
 #include "batched_kernel_param.h"

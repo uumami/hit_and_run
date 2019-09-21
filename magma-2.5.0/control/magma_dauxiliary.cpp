@@ -6,7 +6,7 @@
        @date January 2019
 
        @author Mark Gates
-       @generated from control/magma_zauxiliary.cpp, normal z -> d, Wed Jan  2 14:18:48 2019
+       @generated from control/magma_zauxiliary.cpp, normal z -> d, Sun Sep 15 17:12:54 2019
 */
 #include "magma_internal.h"
 

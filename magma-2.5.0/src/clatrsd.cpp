@@ -6,7 +6,7 @@
        @date January 2019
 
        @author Mark Gates
-       @generated from src/zlatrsd.cpp, normal z -> c, Wed Jan  2 14:18:50 2019
+       @generated from src/zlatrsd.cpp, normal z -> c, Sun Sep 15 17:14:57 2019
        Making s,d precisions requires fixing dot call.
 */
 #include "magma_internal.h"

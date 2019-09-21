@@ -6,7 +6,7 @@
        @date January 2019
 
        @author Stan Tomov
-       @generated from magmablas/zgeqr2.cpp, normal z -> c, Wed Jan  2 14:18:51 2019
+       @generated from magmablas/zgeqr2.cpp, normal z -> c, Sun Sep 15 17:19:28 2019
 
 */
 #include "magma_internal.h"

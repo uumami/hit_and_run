@@ -5,7 +5,7 @@
        Univ. of Colorado, Denver
        @date January 2019
 
-       @generated from testing/testing_zsyr2k_batched.cpp, normal z -> c, Wed Jan  2 14:18:53 2019
+       @generated from testing/testing_zsyr2k_batched.cpp, normal z -> c, Sun Sep 15 17:30:56 2019
        @author Mark Gates
        @author Azzam Haidar
        @author Tingxing Dong

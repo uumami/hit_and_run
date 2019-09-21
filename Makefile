@@ -1,7 +1,7 @@
-CUDADIR 			= /usr/local/cuda
-LSOLVER_LIB		    = ./lpsolve/liblpsolve55.a -ldl
-PCG_GEN				= ./direction_creation/pcg-c-0.94/src/libpcg_random.a
-OPENBLASDIR 	    = /usr/lib/x86_64-linux-gnu/openblas
+CUDADIR = /usr/local/cuda
+LSOLVER_LIB = ./lpsolve/liblpsolve55.a -ldl
+PCG_GEN	= ./direction_creation/pcg-c-0.94/src/libpcg_random.a
+OPENBLASDIR = /usr/lib/x86_64-linux-gnu/openblas
 
 # ----------------------------------------
 # Flags and paths to MAGMA, CUDA, and LAPACK/BLAS

@@ -7,7 +7,7 @@
 
        @author Mark Gates
 
-       @generated from src/zunglq.cpp, normal z -> s, Wed Jan  2 14:18:49 2019
+       @generated from src/zunglq.cpp, normal z -> s, Sun Sep 15 17:13:55 2019
 
 */
 #include "magma_internal.h"

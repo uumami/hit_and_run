@@ -5,7 +5,7 @@
        Univ. of Colorado, Denver
        @date January 2019
 
-       @generated from sparse/control/magma_zmtranspose_cpu.cpp, normal z -> s, Wed Jan  2 14:18:54 2019
+       @generated from sparse/control/magma_zmtranspose_cpu.cpp, normal z -> s, Sun Sep 15 17:36:23 2019
        @author Hartwig Anzt
 
 */

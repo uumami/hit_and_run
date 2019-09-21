@@ -5,7 +5,7 @@
        Univ. of Colorado, Denver
        @date January 2019
 
-       @generated from sparse/src/zresidual.cpp, normal z -> c, Wed Jan  2 14:18:55 2019
+       @generated from sparse/src/zresidual.cpp, normal z -> c, Sun Sep 15 17:38:01 2019
        @author Hartwig Anzt
 
 */

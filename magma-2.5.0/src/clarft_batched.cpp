@@ -8,7 +8,7 @@
        @author Azzam Haidar
        @author Ahmad Abdelfattah
        
-       @generated from src/zlarft_batched.cpp, normal z -> c, Wed Jan  2 14:18:50 2019
+       @generated from src/zlarft_batched.cpp, normal z -> c, Sun Sep 15 17:15:25 2019
 */
 #include "magma_internal.h"
 

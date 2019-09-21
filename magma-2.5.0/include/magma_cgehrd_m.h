@@ -5,7 +5,7 @@
        Univ. of Colorado, Denver
        @date January 2019
 
-       @generated from include/magma_zgehrd_m.h, normal z -> c, Wed Jan  2 14:18:55 2019
+       @generated from include/magma_zgehrd_m.h, normal z -> c, Sun Sep 15 17:12:10 2019
        @author Mark Gates
 */
 

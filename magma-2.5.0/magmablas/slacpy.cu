@@ -8,7 +8,7 @@
        @author Mark Gates
        @author Azzam Haidar
        
-       @generated from magmablas/zlacpy.cu, normal z -> s, Wed Jan  2 14:18:51 2019
+       @generated from magmablas/zlacpy.cu, normal z -> s, Sun Sep 15 17:16:17 2019
 
 */
 #include "magma_internal.h"

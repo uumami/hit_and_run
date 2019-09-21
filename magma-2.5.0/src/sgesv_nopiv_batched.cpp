@@ -7,7 +7,7 @@
        
        @author Azzam Haidar
 
-       @generated from src/zgesv_nopiv_batched.cpp, normal z -> s, Wed Jan  2 14:18:50 2019
+       @generated from src/zgesv_nopiv_batched.cpp, normal z -> s, Sun Sep 15 17:15:17 2019
 */
 #include "magma_internal.h"
 #include "batched_kernel_param.h"

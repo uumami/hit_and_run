@@ -5,7 +5,7 @@
        Univ. of Colorado, Denver
        @date January 2019
 
-       @generated from sparse/blas/magma_zget_rowptr.cu, normal z -> c, Wed Jan  2 14:18:54 2019
+       @generated from sparse/blas/magma_zget_rowptr.cu, normal z -> c, Sun Sep 15 17:35:19 2019
 
 */
 #include "magmasparse_internal.h"

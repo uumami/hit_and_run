@@ -8,7 +8,7 @@
        @author Stan Tomov
        @author Mark Gates
        
-       @generated from src/zlabrd_gpu.cpp, normal z -> d, Wed Jan  2 14:18:50 2019
+       @generated from src/zlabrd_gpu.cpp, normal z -> d, Sun Sep 15 17:15:07 2019
 
 */
 #include "magma_internal.h"

@@ -5,7 +5,7 @@
        Univ. of Colorado, Denver
        @date January 2019
 
-       @generated from sparse/blas/zgecsr5mv.cu, normal z -> s, Wed Jan  2 14:18:53 2019
+       @generated from sparse/blas/zgecsr5mv.cu, normal z -> s, Sun Sep 15 17:32:18 2019
        @author Weifeng Liu
 
 */

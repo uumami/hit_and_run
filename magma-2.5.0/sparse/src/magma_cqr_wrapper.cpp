@@ -8,7 +8,7 @@
        @author Hartwig Anzt
        @author Eduardo Ponce
 
-       @generated from sparse/src/magma_zqr_wrapper.cpp, normal z -> c, Wed Jan  2 14:18:55 2019
+       @generated from sparse/src/magma_zqr_wrapper.cpp, normal z -> c, Sun Sep 15 17:37:58 2019
 */
 
 #include "magmasparse_internal.h"

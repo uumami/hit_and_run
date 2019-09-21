@@ -8,7 +8,7 @@
        @author Ichitaro Yamazaki
        @author Stan Tomov
 
-       @generated from src/zhetrf_nopiv_gpu.cpp, normal z -> s, Wed Jan  2 14:18:49 2019
+       @generated from src/zhetrf_nopiv_gpu.cpp, normal z -> s, Sun Sep 15 17:14:12 2019
 */
 #include "magma_internal.h"
 #include "trace.h"

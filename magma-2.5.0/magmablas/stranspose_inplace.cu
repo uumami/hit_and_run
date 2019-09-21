@@ -5,7 +5,7 @@
        Univ. of Colorado, Denver
        @date January 2019
 
-       @generated from magmablas/ztranspose_inplace.cu, normal z -> s, Wed Jan  2 14:18:51 2019
+       @generated from magmablas/ztranspose_inplace.cu, normal z -> s, Sun Sep 15 17:18:08 2019
 
        @author Stan Tomov
        @author Mark Gates

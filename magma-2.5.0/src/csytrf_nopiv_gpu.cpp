@@ -9,7 +9,7 @@
        @author Stan Tomov
        @author Adrien Remy
 
-       @generated from src/zsytrf_nopiv_gpu.cpp, normal z -> c, Wed Jan  2 14:18:49 2019
+       @generated from src/zsytrf_nopiv_gpu.cpp, normal z -> c, Sun Sep 15 17:14:13 2019
 */
 #include "magma_internal.h"
 #include "trace.h"

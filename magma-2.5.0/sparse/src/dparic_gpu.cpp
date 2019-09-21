@@ -7,7 +7,7 @@
 
        @author Hartwig Anzt
 
-       @generated from sparse/src/zparic_gpu.cpp, normal z -> d, Wed Jan  2 14:18:55 2019
+       @generated from sparse/src/zparic_gpu.cpp, normal z -> d, Sun Sep 15 17:37:47 2019
 */
 
 #include "magmasparse_internal.h"

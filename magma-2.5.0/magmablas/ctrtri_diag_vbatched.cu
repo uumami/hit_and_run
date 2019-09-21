@@ -5,7 +5,7 @@
        Univ. of Colorado, Denver
        @date January 2019
 
-       @generated from magmablas/ztrtri_diag_vbatched.cu, normal z -> c, Wed Jan  2 14:18:51 2019
+       @generated from magmablas/ztrtri_diag_vbatched.cu, normal z -> c, Sun Sep 15 17:25:29 2019
 
        @author Peng Du
        @author Tingxing Dong

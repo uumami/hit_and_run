@@ -8,7 +8,7 @@
        @author Hartwig Anzt
        @author Goran Flegar
 
-       @generated from sparse/blas/zgeisai_batched32.cu, normal z -> s, Wed Jan  2 14:18:54 2019
+       @generated from sparse/blas/zgeisai_batched32.cu, normal z -> s, Sun Sep 15 17:35:45 2019
 
 */
 #include "magmasparse_internal.h"

@@ -7,7 +7,7 @@
        
        @author Adrien REMY
 
-       @generated from src/zgetrs_nopiv_gpu.cpp, normal z -> s, Wed Jan  2 14:18:49 2019
+       @generated from src/zgetrs_nopiv_gpu.cpp, normal z -> s, Sun Sep 15 17:13:21 2019
 
 */
 #include "magma_internal.h"

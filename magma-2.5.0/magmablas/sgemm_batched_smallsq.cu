@@ -8,7 +8,7 @@
        @author Ahmad Abdelfattah
        @author Azzam Haidar
 
-       @generated from magmablas/zgemm_batched_smallsq.cu, normal z -> s, Wed Jan  2 14:18:51 2019
+       @generated from magmablas/zgemm_batched_smallsq.cu, normal z -> s, Sun Sep 15 17:20:08 2019
 */
 
 #include "magma_internal.h"

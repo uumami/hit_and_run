@@ -6,7 +6,7 @@
        @date January 2019
 
        @author Stan Tomov
-       @generated from src/zpotrf.cpp, normal z -> s, Wed Jan  2 14:18:48 2019
+       @generated from src/zpotrf.cpp, normal z -> s, Sun Sep 15 17:13:09 2019
 */
 #include "magma_internal.h"
 

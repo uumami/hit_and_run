@@ -6,7 +6,7 @@
        @date January 2019
 
        @author Stan Tomov
-       @generated from src/zhetrf_aasen.cpp, normal z -> s, Wed Jan  2 14:18:49 2019
+       @generated from src/zhetrf_aasen.cpp, normal z -> s, Sun Sep 15 17:14:08 2019
 */
 #include "magma_internal.h"
 #include "trace.h"

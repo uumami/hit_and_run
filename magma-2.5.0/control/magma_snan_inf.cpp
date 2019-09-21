@@ -6,7 +6,7 @@
        @date January 2019
 
        @author Mark Gates
-       @generated from control/magma_znan_inf.cpp, normal z -> s, Wed Jan  2 14:18:48 2019
+       @generated from control/magma_znan_inf.cpp, normal z -> s, Sun Sep 15 17:12:56 2019
 
 */
 #include <limits>

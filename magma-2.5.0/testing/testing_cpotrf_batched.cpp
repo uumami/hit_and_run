@@ -8,7 +8,7 @@
    @author Azzam Haidar
    @author Tingxing Dong
 
-   @generated from testing/testing_zpotrf_batched.cpp, normal z -> c, Wed Jan  2 14:18:53 2019
+   @generated from testing/testing_zpotrf_batched.cpp, normal z -> c, Sun Sep 15 17:31:21 2019
 */
 // includes, system
 #include <stdlib.h>

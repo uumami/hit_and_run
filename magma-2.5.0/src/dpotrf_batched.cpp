@@ -9,7 +9,7 @@
        @author Tingxing Dong
        @author Ahmad Abdelfattah
 
-       @generated from src/zpotrf_batched.cpp, normal z -> d, Wed Jan  2 14:18:50 2019
+       @generated from src/zpotrf_batched.cpp, normal z -> d, Sun Sep 15 17:15:21 2019
 */
 #include <cuda_runtime.h>
 

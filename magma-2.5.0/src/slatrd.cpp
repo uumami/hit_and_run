@@ -9,7 +9,7 @@
        @author Stan Tomov
        @author Mark Gates
 
-       @generated from src/zlatrd.cpp, normal z -> s, Wed Jan  2 14:18:49 2019
+       @generated from src/zlatrd.cpp, normal z -> s, Sun Sep 15 17:14:23 2019
 
 */
 #include "magma_internal.h"

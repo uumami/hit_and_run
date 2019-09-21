@@ -8,7 +8,7 @@
        @author Stan Tomov
        @author Mark Gates
        
-       @generated from magmablas/zbcyclic.cpp, normal z -> s, Wed Jan  2 14:18:51 2019
+       @generated from magmablas/zbcyclic.cpp, normal z -> s, Sun Sep 15 17:19:10 2019
 */
 #include "magma_internal.h"
 

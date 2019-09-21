@@ -5,7 +5,7 @@
        Univ. of Colorado, Denver
        @date January 2019
 
-       @generated from src/zungqr2.cpp, normal z -> d, Wed Jan  2 14:18:49 2019
+       @generated from src/zungqr2.cpp, normal z -> d, Sun Sep 15 17:13:57 2019
 
        @author Stan Tomov
        @author Mark Gates

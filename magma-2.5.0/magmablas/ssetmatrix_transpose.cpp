@@ -5,7 +5,7 @@
        Univ. of Colorado, Denver
        @date January 2019
 
-       @generated from magmablas/zsetmatrix_transpose.cpp, normal z -> s, Wed Jan  2 14:18:51 2019
+       @generated from magmablas/zsetmatrix_transpose.cpp, normal z -> s, Sun Sep 15 17:17:43 2019
 
 */
 #include "magma_internal.h"

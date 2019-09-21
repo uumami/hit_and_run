@@ -5,7 +5,7 @@
        Univ. of Colorado, Denver
        @date January 2019
 
-       @generated from sparse/blas/magma_zmconjugate.cu, normal z -> c, Wed Jan  2 14:18:54 2019
+       @generated from sparse/blas/magma_zmconjugate.cu, normal z -> c, Sun Sep 15 17:35:18 2019
        @author Hartwig Anzt
 
 */
