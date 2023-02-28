@@ -1,3 +1,9 @@
+This is an old repository for the mhar algorithm.    
+For the newest version visit: https://github.com/uumami/mhar  
+Code for the paper: https://github.com/uumami/mhar_pytorch    
+For the paper: https://arxiv.org/abs/2104.07097?utm_source=feedburner&utm_medium=feed&utm_campaign=Feed%3A+arxiv%2FQSXk+%28ExcitingAds%21+cs+updates+on+arXiv.org%29   
+Video: www.youtube.com/watch?v=o2CxnI6onts  
+
 # hit_and_run
 Hit and Run algorithm for a regular polytope, using GPGPU. (MAGMA, LPSOLVER, PCG-c).
 
